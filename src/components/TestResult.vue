@@ -7,12 +7,16 @@ defineProps({
   buildNumber: {
     type: String,
     default: '',
-  }
+  },
+  type: {
+    type: String,
+    required: true,
+  },
 });
 </script>
 
 <template>
-  <details>
+  <details v-if="type === 'fail'">
     <summary>{{ testResult.title }}</summary>
     <div class="error" v-if="testResult.fail">
       <img
@@ -22,6 +26,9 @@ defineProps({
       {{ testResult.err?.message?.replaceAll('\\', '') }}
     </div>
   </details>
+  <template v-else>
+    {{ testResult.title }}
+  </template>
 </template>
 
 <style scoped lang="scss">
