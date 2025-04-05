@@ -1,0 +1,30 @@
+<script setup>
+defineProps({
+  builds: {
+    type: Array,
+    required: true,
+  },
+  modelValue: {
+    type: String,
+    default: '',
+  },
+});
+
+const emit = defineEmits(['update:modelValue']);
+
+const emitValue = (event) => {
+  emit('update:modelValue', event.target.value);
+};
+</script>
+
+<template>
+  <section>
+    <h4>Select build:</h4>
+    <select class="select" :value="modelValue" @change="emitValue">
+      <option value="" disabled>Select build</option>
+      <option v-for="build in builds" :key="build.number" :value="build.number">
+        {{ build.number }}
+      </option>
+    </select>
+  </section>
+</template>

@@ -1,47 +1,124 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+import { onMounted, ref, watch } from 'vue';
+import Loader from '@/components/Loader.vue';
+import SelectBuild from '@/components/SelectBuild.vue';
+import PipelineInfo from '@/components/PipelineInfo.vue';
+import TestsResults from '@/components/TestsResults.vue';
+
+const appInit = ref(false);
+const dataLoaded = ref(false);
+const buildsInfo = ref([]); // previous + latest
+const buildInfo = ref(null);
+const testsResultsData = ref([]);
+const selectedBuildNumber = ref('');
+
+async function loadBuildsInfo() {
+  const [previousBuildsInfo, latestBuildInfo] = await Promise.all([
+    fetch(`https://dyaroman.github.io/wla-e2e/data/builds.json`).then((res) =>
+      res.json(),
+    ),
+    fetch(`https://dyaroman.github.io/wla-e2e/data/build-info.json`)
+      .then((res) => res.json())
+      .then((json) => ({
+        number: json['buildNumber'],
+        timestamp: json['buildTimestamp'],
+      })),
+  ]);
+  buildsInfo.value = [...previousBuildsInfo, latestBuildInfo].reverse();
+}
+
+function getBuildNumberFromUrl() {
+  const latestBuildNumber = buildsInfo.value[0].number;
+  const buildNumberFromUrl = new URLSearchParams(window.location.search).get(
+    'build',
+  );
+
+  // if no build in url than use latest
+  if (!buildNumberFromUrl) {
+    selectedBuildNumber.value = latestBuildNumber;
+    return;
+  }
+
+  const validBuildNumber = buildsInfo.value.find(
+    (build) => build.number.toString() === buildNumberFromUrl,
+  )?.number;
+  if (validBuildNumber) {
+    selectedBuildNumber.value = validBuildNumber;
+  } else {
+    // if in url not valid build number than use latest
+    selectedBuildNumber.value = latestBuildNumber;
+    updateBuildNumberInUrl('');
+  }
+}
+
+async function loadBuildData() {
+  let buildNumber = selectedBuildNumber.value;
+  if (buildNumber.toString() === buildsInfo.value[0].number.toString()) {
+    buildNumber = '';
+  }
+  if (buildNumber !== '') {
+    buildNumber = `${buildNumber}/`;
+  }
+  const [buildInfoJson, testResultsJson] = await Promise.all([
+    fetch(
+      `https://dyaroman.github.io/wla-e2e/data/${buildNumber}build-info.json`,
+    ).then((res) => res.json()),
+    fetch(
+      `https://dyaroman.github.io/wla-e2e/data/${buildNumber}results.json`,
+    ).then((res) => res.json()),
+  ]);
+  buildInfo.value = buildInfoJson;
+  testsResultsData.value = testResultsJson;
+  dataLoaded.value = true;
+}
+
+function updateBuildNumberInUrl(buildNumber) {
+  const url = new URL(window.location.href);
+  if (buildNumber) {
+    url.searchParams.set('build', buildNumber);
+  } else {
+    url.searchParams.delete('build');
+  }
+  window.history.replaceState({}, document.title, url.toString());
+}
+
+async function updateSelectedBuildNumber(newValue) {
+  selectedBuildNumber.value = newValue;
+  dataLoaded.value = false;
+  await loadBuildData();
+}
+
+watch(selectedBuildNumber, (newValue) => updateBuildNumberInUrl(newValue));
+
+onMounted(async () => {
+  try {
+    await loadBuildsInfo();
+    getBuildNumberFromUrl();
+    await loadBuildData();
+    appInit.value = true;
+  } catch (e) {
+    console.error('Error fetching data:', e);
+  }
+});
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+  <Loader v-if="!appInit" fixed />
+  <template v-else>
+    <h3>AQA</h3>
+    <SelectBuild
+      :builds="buildsInfo"
+      :model-value="selectedBuildNumber.toString()"
+      @update:model-Value="updateSelectedBuildNumber"
+    />
+    <Loader v-if="!dataLoaded" />
+    <template v-else>
+      <PipelineInfo :build-id="buildInfo.buildId.toString()" :build-number="selectedBuildNumber.toString()" />
+      <TestsResults :tests-results="testsResultsData" :build-number="selectedBuildNumber.toString()" />
+    </template>
+  </template>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
+<style lang="scss">
+@use 'styles/index.scss';
 </style>
