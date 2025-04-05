@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted } from 'vue';
 
 import TestsResultsList from '@/components/TestsResultsList.vue';
 
@@ -11,7 +11,7 @@ const props = defineProps({
   buildNumber: {
     type: String,
     required: true,
-  }
+  },
 });
 
 const passed = [];
@@ -29,7 +29,8 @@ for (const testResult of props.testsResults) {
 }
 
 function updateFavicon(isGreen) {
-  const link = document.querySelector("link[rel*=icon]") || document.createElement('link');
+  const link =
+    document.querySelector('link[rel*=icon]') || document.createElement('link');
   link.rel = 'icon';
   link.href = isGreen ? '/green.ico' : '/red.ico';
   document.head.appendChild(link);
@@ -38,7 +39,7 @@ function updateFavicon(isGreen) {
 onMounted(() => {
   document.title = `[${failed.length}/${props.testsResults.length}]: AQA`;
   updateFavicon(failed.length === 0);
-})
+});
 </script>
 
 <template>

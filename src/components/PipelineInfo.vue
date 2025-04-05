@@ -7,8 +7,8 @@ defineProps({
   buildNumber: {
     type: String,
     required: true,
-  }
-})
+  },
+});
 </script>
 
 <template>
@@ -19,11 +19,10 @@ defineProps({
         :href="`https://github.com/dyaroman/wla-e2e/_build/results?buildId=${buildId}&view=results`"
         target="_blank"
         rel="noopener noreferrer"
-      >#{{buildNumber}}</a>
+        >#{{ buildNumber }}</a
+      >
     </h4>
   </section>
 </template>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

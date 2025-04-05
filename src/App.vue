@@ -113,8 +113,14 @@ onMounted(async () => {
     />
     <Loader v-if="!dataLoaded" />
     <template v-else>
-      <PipelineInfo :build-id="buildInfo.buildId.toString()" :build-number="selectedBuildNumber.toString()" />
-      <TestsResults :tests-results="testsResultsData" :build-number="selectedBuildNumber.toString()" />
+      <PipelineInfo
+        :build-id="buildInfo.buildId.toString()"
+        :build-number="selectedBuildNumber.toString()"
+      />
+      <TestsResults
+        :tests-results="testsResultsData"
+        :build-number="selectedBuildNumber.toString()"
+      />
     </template>
   </template>
 </template>
