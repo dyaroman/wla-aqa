@@ -15,7 +15,7 @@ const props = defineProps({
   buildNumber: {
     type: String,
     required: false,
-  }
+  },
 });
 
 const { type, testsResults } = props;
@@ -41,6 +41,7 @@ const title = computed(() => {
 <template>
   <details
     class="list"
+    v-if="testsResults.length"
     :open="type === 'fail' && testsResults.length > 0"
     :class="{
       pass: type === 'pass',
@@ -51,12 +52,22 @@ const title = computed(() => {
     <summary>
       {{ title }}
     </summary>
-    <ul>
+    <ol>
       <li v-for="testResult in testsResults" :key="testResult.uuid">
-        <TestResult :testResult :build-number />
+        <TestResult :testResult :build-number :type />
       </li>
-    </ul>
+    </ol>
   </details>
+  <div
+    v-else
+    :class="{
+      pass: type === 'pass',
+      fail: type === 'fail',
+      skip: type === 'skip',
+    }"
+  >
+    {{ title }}
+  </div>
 </template>
 
 <style lang="scss">
@@ -79,12 +90,9 @@ const title = computed(() => {
   margin-bottom: 1rem;
 }
 
-ul {
+ol {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  padding-left: 1rem;
-
-  list-style: none;
 }
 </style>
