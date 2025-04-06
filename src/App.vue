@@ -105,7 +105,7 @@ onMounted(async () => {
 <template>
   <Loader v-if="!appInit" fixed />
   <template v-else>
-    <h3>AQA</h3>
+    <h3><a href="/">AQA</a></h3>
     <SelectBuild
       :builds="buildsInfo"
       :model-value="selectedBuildNumber.toString()"
