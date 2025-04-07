@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted } from 'vue';
 
-import TestsResultsList from '@/components/TestsResultsList.vue';
+import TestResultsCategory from '@/components/TestResultsCategory.vue';
 
 const props = defineProps({
   testsResults: {
@@ -43,9 +43,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <TestsResultsList type="fail" :tests-results="failed" :build-number />
-  <TestsResultsList type="pass" :tests-results="passed" />
-  <TestsResultsList type="skip" :tests-results="skipped" />
+  <TestResultsCategory type="fail" :tests-results="failed" :build-number />
+  <TestResultsCategory type="pass" :tests-results="passed" />
+  <TestResultsCategory type="skip" :tests-results="skipped" />
 </template>
 
 <style scoped lang="scss"></style>
