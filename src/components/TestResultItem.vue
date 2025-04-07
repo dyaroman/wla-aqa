@@ -1,6 +1,4 @@
 <script setup>
-import { computed } from 'vue';
-
 import { reformatErrorMessage } from '@/misc/helpers.js';
 
 const props = defineProps({
@@ -18,19 +16,15 @@ const props = defineProps({
   },
 });
 
-const errorMessage = computed(() => {
-  if (props.category === 'fail') {
-    return reformatErrorMessage(props.testResult.err?.message);
-  }
-  return null;
-});
+const { category, testResult, buildNumber } = props;
 
-const src = computed(() => {
-  if (props.category === 'fail') {
-    return `https://dyaroman.github.io/wla-e2e/data/${props.buildNumber ? `${props.buildNumber}/` : ''}images/${props.testResult.img}`;
-  }
-  return null;
-});
+const errorMessage =
+  category === 'fail' ? reformatErrorMessage(testResult.err?.message) : null;
+
+const src =
+  category === 'fail'
+    ? `https://dyaroman.github.io/wla-e2e/data/${buildNumber ? `${buildNumber}/` : ''}images/${testResult.img}`
+    : null;
 </script>
 
 <template>

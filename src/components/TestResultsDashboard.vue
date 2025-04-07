@@ -15,14 +15,14 @@ const props = defineProps({
   },
 });
 
-const passed = computed(() => props.testResults.filter((test) => test.pass));
-const failed = computed(() => props.testResults.filter((test) => test.fail));
-const skipped = computed(() =>
-  props.testResults.filter((test) => test.skipped),
-);
+const { testResults } = props;
+
+const passed = computed(() => testResults.filter((test) => test.pass));
+const failed = computed(() => testResults.filter((test) => test.fail));
+const skipped = computed(() => testResults.filter((test) => test.skipped));
 
 const documentTitle = computed(
-  () => `[${failed.value.length}/${props.testResults.length}]: AQA`,
+  () => `[${failed.value.length}/${testResults.length}]: AQA`,
 );
 const shouldShowGreenFavicon = computed(() => failed.value.length === 0);
 

@@ -1,6 +1,4 @@
 <script setup>
-import { computed } from 'vue';
-
 import TestResultItem from '@/components/TestResultItem.vue';
 
 const props = defineProps({
@@ -21,29 +19,31 @@ const props = defineProps({
 
 const { category, testResults } = props;
 
-const title = computed(() => {
-  let title = '';
-  switch (category) {
-    case 'pass':
-      title += 'Passed';
-      break;
-    case 'fail':
-      title += 'Failed';
-      break;
-    case 'skip':
-      title += 'Skipped';
-      break;
-  }
-  title += `: ${testResults.length}`;
-  return title;
-});
+let title = '';
+switch (category) {
+  case 'pass':
+    title += 'Passed';
+    break;
+  case 'fail':
+    title += 'Failed';
+    break;
+  case 'skip':
+    title += 'Skipped';
+    break;
+  default:
+    title += 'Unknown category';
+    break;
+}
+title += `: ${testResults.length}`;
+
+const isOpen = category === 'fail' && testResults.length > 0;
 </script>
 
 <template>
   <details
     class="list"
     v-if="testResults.length"
-    :open="category === 'fail' && testResults.length > 0"
+    :open="isOpen"
     :class="{
       pass: category === 'pass',
       fail: category === 'fail',

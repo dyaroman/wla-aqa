@@ -15,16 +15,16 @@ const buildInfo = ref(null);
 const testResults = ref([]);
 
 const latestBuildNumber = computed(() => buildsInfo.value[0]?.number || '');
-const buildNumberFromUrl = computed(() =>
-  new URLSearchParams(window.location.search).get('build'),
+const buildNumberFromUrl = new URLSearchParams(window.location.search).get(
+  'build',
 );
 const currentBuildNumber = computed(() => {
-  if (!buildNumberFromUrl.value) {
+  if (!buildNumberFromUrl) {
     return latestBuildNumber.value;
   }
 
   const validBuildNumber = buildsInfo.value.find(
-    (build) => build.number.toString() === buildNumberFromUrl.value,
+    (build) => build.number.toString() === buildNumberFromUrl,
   )?.number;
 
   return validBuildNumber || latestBuildNumber.value;

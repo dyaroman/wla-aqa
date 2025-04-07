@@ -1,5 +1,5 @@
 <script setup>
-defineProps({
+const props = defineProps({
   buildId: {
     type: String,
     required: true,
@@ -9,16 +9,17 @@ defineProps({
     required: true,
   },
 });
+
+const { buildId } = props;
+
+const buildLink = `https://github.com/dyaroman/wla-e2e/_build/results?buildId=${buildId}&view=results`;
 </script>
 
 <template>
   <section>
     <h4>
       Build:
-      <a
-        :href="`https://github.com/dyaroman/wla-e2e/_build/results?buildId=${buildId}&view=results`"
-        target="_blank"
-        rel="noopener noreferrer"
+      <a :href="buildLink" target="_blank" rel="noopener noreferrer"
         >#{{ buildNumber }}</a
       >
     </h4>
