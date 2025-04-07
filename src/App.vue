@@ -2,7 +2,7 @@
 import { onMounted, ref, watch } from 'vue';
 import Loader from '@/components/Loader.vue';
 import BuildSelector from '@/components/BuildSelector.vue';
-import PipelineInfo from '@/components/PipelineInfo.vue';
+import BuildPipelineInfo from '@/components/BuildPipelineInfo.vue';
 import TestResultsDashboard from '@/components/TestResultsDashboard.vue';
 
 const appInit = ref(false);
@@ -113,7 +113,7 @@ onMounted(async () => {
     />
     <Loader v-if="!dataLoaded" />
     <template v-else>
-      <PipelineInfo
+      <BuildPipelineInfo
         :build-id="buildInfo.buildId.toString()"
         :build-number="selectedBuildNumber.toString()"
       />
