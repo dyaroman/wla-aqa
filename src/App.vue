@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch, computed } from 'vue';
 
 import Loader from '@/Loader.vue';
 import BuildSelector from '@/BuildSelector.vue';
@@ -9,9 +9,36 @@ import TestResultsDashboard from '@/TestResultsDashboard.vue';
 const appInit = ref(false);
 const dataLoaded = ref(false);
 const buildsInfo = ref([]); // previous + latest
+const selectedBuildNumber = ref('');
 const buildInfo = ref(null);
 const testResults = ref([]);
-const selectedBuildNumber = ref('');
+
+const latestBuildNumber = computed(() => buildsInfo.value[0]?.number || '');
+const buildNumberFromUrl = computed(() =>
+  new URLSearchParams(window.location.search).get('build'),
+);
+const currentBuildNumber = computed(() => {
+  if (!buildNumberFromUrl.value) {
+    return latestBuildNumber.value;
+  }
+
+  const validBuildNumber = buildsInfo.value.find(
+    (build) => build.number.toString() === buildNumberFromUrl.value,
+  )?.number;
+
+  return validBuildNumber || latestBuildNumber.value;
+});
+
+const buildNumber = computed(() => {
+  let buildNumber = selectedBuildNumber.value;
+  if (buildNumber.toString() === latestBuildNumber.value.toString()) {
+    buildNumber = '';
+  }
+  if (buildNumber !== '') {
+    buildNumber = `${buildNumber}/`;
+  }
+  return buildNumber;
+});
 
 async function loadBuildsInfo() {
   const [previousBuildsInfo, latestBuildInfo] = await Promise.all([
@@ -28,44 +55,13 @@ async function loadBuildsInfo() {
   buildsInfo.value = [...previousBuildsInfo, latestBuildInfo].reverse();
 }
 
-function getBuildNumberFromUrl() {
-  const latestBuildNumber = buildsInfo.value[0].number;
-  const buildNumberFromUrl = new URLSearchParams(window.location.search).get(
-    'build',
-  );
-
-  // if no build in url than use latest
-  if (!buildNumberFromUrl) {
-    selectedBuildNumber.value = latestBuildNumber;
-    return;
-  }
-
-  const validBuildNumber = buildsInfo.value.find(
-    (build) => build.number.toString() === buildNumberFromUrl,
-  )?.number;
-  if (validBuildNumber) {
-    selectedBuildNumber.value = validBuildNumber;
-  } else {
-    // if in url not valid build number than use latest
-    selectedBuildNumber.value = latestBuildNumber;
-    updateBuildNumberInUrl('');
-  }
-}
-
 async function loadBuildData() {
-  let buildNumber = selectedBuildNumber.value;
-  if (buildNumber.toString() === buildsInfo.value[0].number.toString()) {
-    buildNumber = '';
-  }
-  if (buildNumber !== '') {
-    buildNumber = `${buildNumber}/`;
-  }
   const [buildInfoJson, testResultsJson] = await Promise.all([
     fetch(
-      `https://dyaroman.github.io/wla-e2e/data/${buildNumber}build-info.json`,
+      `https://dyaroman.github.io/wla-e2e/data/${buildNumber.value}build-info.json`,
     ).then((res) => res.json()),
     fetch(
-      `https://dyaroman.github.io/wla-e2e/data/${buildNumber}results.json`,
+      `https://dyaroman.github.io/wla-e2e/data/${buildNumber.value}results.json`,
     ).then((res) => res.json()),
   ]);
   buildInfo.value = buildInfoJson;
@@ -94,7 +90,7 @@ watch(selectedBuildNumber, (newValue) => updateBuildNumberInUrl(newValue));
 onMounted(async () => {
   try {
     await loadBuildsInfo();
-    getBuildNumberFromUrl();
+    selectedBuildNumber.value = currentBuildNumber.value;
     await loadBuildData();
     appInit.value = true;
   } catch (e) {
