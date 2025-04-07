@@ -1,7 +1,7 @@
 <script setup>
 import TestResultItem from '@/components/TestResultItem.vue';
 
-const props = defineProps({
+const { category, testResults } = defineProps({
   category: {
     type: String,
     required: true,
@@ -16,8 +16,6 @@ const props = defineProps({
     required: false,
   },
 });
-
-const { category, testResults } = props;
 
 let title = '';
 switch (category) {

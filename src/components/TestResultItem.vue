@@ -1,7 +1,7 @@
 <script setup>
 import { reformatErrorMessage } from '@/misc/helpers.js';
 
-const props = defineProps({
+const { category, testResult, buildNumber } = defineProps({
   testResult: {
     type: Object,
     required: true,
@@ -15,8 +15,6 @@ const props = defineProps({
     required: true,
   },
 });
-
-const { category, testResult, buildNumber } = props;
 
 const errorMessage =
   category === 'fail' ? reformatErrorMessage(testResult.err?.message) : null;

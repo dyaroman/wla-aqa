@@ -4,7 +4,7 @@ import { computed, onMounted } from 'vue';
 import TestResultsCategory from '@/components/TestResultsCategory.vue';
 import { updateFavicon } from '@/misc/helpers.js';
 
-const props = defineProps({
+const { testResults } = defineProps({
   testResults: {
     type: Array,
     required: true,
@@ -14,8 +14,6 @@ const props = defineProps({
     required: true,
   },
 });
-
-const { testResults } = props;
 
 const passed = computed(() => testResults.filter((test) => test.pass));
 const failed = computed(() => testResults.filter((test) => test.fail));

@@ -1,5 +1,5 @@
 <script setup>
-const props = defineProps({
+const { buildId } = defineProps({
   buildId: {
     type: String,
     required: true,
@@ -9,8 +9,6 @@ const props = defineProps({
     required: true,
   },
 });
-
-const { buildId } = props;
 
 const buildLink = `https://github.com/dyaroman/wla-e2e/_build/results?buildId=${buildId}&view=results`;
 </script>
