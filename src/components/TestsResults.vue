@@ -43,9 +43,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <TestsResultsList type="fail" :testsResults="failed" :build-number />
-  <TestsResultsList type="pass" :testsResults="passed" />
-  <TestsResultsList type="skip" :testsResults="skipped" />
+  <TestsResultsList type="fail" :tests-results="failed" :build-number />
+  <TestsResultsList type="pass" :tests-results="passed" />
+  <TestsResultsList type="skip" :tests-results="skipped" />
 </template>
 
 <style scoped lang="scss"></style>

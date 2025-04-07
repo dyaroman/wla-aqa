@@ -54,7 +54,7 @@ const title = computed(() => {
     </summary>
     <ol>
       <li v-for="testResult in testsResults" :key="testResult.uuid">
-        <TestResult :testResult :build-number :type />
+        <TestResult :test-result :build-number :type />
       </li>
     </ol>
   </details>
