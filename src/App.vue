@@ -3,7 +3,7 @@ import { onMounted, ref, watch } from 'vue';
 import Loader from '@/components/Loader.vue';
 import SelectBuild from '@/components/SelectBuild.vue';
 import PipelineInfo from '@/components/PipelineInfo.vue';
-import TestsResults from '@/components/TestsResults.vue';
+import TestResultsDashboard from '@/components/TestResultsDashboard.vue';
 
 const appInit = ref(false);
 const dataLoaded = ref(false);
@@ -117,7 +117,7 @@ onMounted(async () => {
         :build-id="buildInfo.buildId.toString()"
         :build-number="selectedBuildNumber.toString()"
       />
-      <TestsResults
+      <TestResultsDashboard
         :tests-results="testsResultsData"
         :build-number="selectedBuildNumber.toString()"
       />
