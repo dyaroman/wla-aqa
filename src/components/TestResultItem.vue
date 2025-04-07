@@ -14,9 +14,32 @@ const props = defineProps({
   },
 });
 
-const { testResult, buildNumber } = props;
-const errorMessage = testResult.err?.message?.replaceAll('\\', '');
-const src = `https://dyaroman.github.io/wla-e2e/data/${buildNumber ? `${buildNumber}/` : ''}images/${testResult.img}`;
+function reformatErrorMessage(errorMsg) {
+  try {
+    const filterStart = errorMsg.indexOf('Filters: ');
+    if (filterStart === -1) return errorMsg;
+
+    const jsonStart = errorMsg.indexOf('{', filterStart);
+    const jsonString = errorMsg.slice(jsonStart, -1);
+    const parsedFilters = JSON.parse(JSON.parse(`"${jsonString}"`));
+    const formattedFilters = JSON.stringify(parsedFilters, null, 2);
+
+    return (
+      errorMsg.slice(0, filterStart) +
+      'Filters:\n' +
+      formattedFilters.replaceAll('\\', '')
+    );
+  } catch (e) {
+    return errorMsg;
+  }
+}
+
+const { testResult, buildNumber, category } = props;
+let errorMessage, src;
+if (category === 'fail') {
+  errorMessage = reformatErrorMessage(testResult.err?.message);
+  src = `https://dyaroman.github.io/wla-e2e/data/${buildNumber ? `${buildNumber}/` : ''}images/${testResult.img}`;
+}
 </script>
 
 <template>
@@ -24,10 +47,21 @@ const src = `https://dyaroman.github.io/wla-e2e/data/${buildNumber ? `${buildNum
     <summary>{{ testResult.title }}</summary>
     <div class="error-message" v-if="testResult.fail">
       <img :src :alt="errorMessage" />
-      {{ errorMessage }}
+      <pre v-if="errorMessage.includes('{')"
+        >{{ errorMessage }}
+      </pre>
+      <template v-else>
+        {{ errorMessage?.replaceAll('\\', '') }}
+      </template>
     </div>
   </details>
   <template v-else>
     {{ testResult.title }}
   </template>
 </template>
+
+<style scoped>
+pre {
+  white-space: pre-wrap;
+}
+</style>
