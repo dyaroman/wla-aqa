@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
 
 import TestResultsCategory from '@/TestResultsCategory.vue';
 
@@ -14,19 +14,16 @@ const props = defineProps({
   },
 });
 
-const passed = [];
-const failed = [];
-const skipped = [];
+const passed = computed(() => props.testResults.filter((test) => test.pass));
+const failed = computed(() => props.testResults.filter((test) => test.fail));
+const skipped = computed(() =>
+  props.testResults.filter((test) => test.skipped),
+);
 
-for (const testResult of props.testResults) {
-  if (testResult.pass) {
-    passed.push(testResult);
-  } else if (testResult.fail) {
-    failed.push(testResult);
-  } else if (testResult.skipped) {
-    skipped.push(testResult);
-  }
-}
+const documentTitle = computed(
+  () => `[${failed.value.length}/${props.testResults.length}]: AQA`,
+);
+const shouldShowGreenFavicon = computed(() => failed.value.length === 0);
 
 function updateFavicon(isGreen) {
   const link =
@@ -37,8 +34,8 @@ function updateFavicon(isGreen) {
 }
 
 onMounted(() => {
-  document.title = `[${failed.length}/${props.testResults.length}]: AQA`;
-  updateFavicon(failed.length === 0);
+  document.title = documentTitle.value;
+  updateFavicon(shouldShowGreenFavicon.value);
 });
 </script>
 
