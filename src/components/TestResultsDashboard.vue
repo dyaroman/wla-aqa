@@ -1,7 +1,8 @@
 <script setup>
 import { computed, onMounted } from 'vue';
 
-import TestResultsCategory from '@/TestResultsCategory.vue';
+import TestResultsCategory from '@/components/TestResultsCategory.vue';
+import { updateFavicon } from '@/misc/helpers.js';
 
 const props = defineProps({
   testResults: {
@@ -24,14 +25,6 @@ const documentTitle = computed(
   () => `[${failed.value.length}/${props.testResults.length}]: AQA`,
 );
 const shouldShowGreenFavicon = computed(() => failed.value.length === 0);
-
-function updateFavicon(isGreen) {
-  const link =
-    document.querySelector('link[rel*=icon]') || document.createElement('link');
-  link.rel = 'icon';
-  link.href = isGreen ? '/green.ico' : '/red.ico';
-  document.head.appendChild(link);
-}
 
 onMounted(() => {
   document.title = documentTitle.value;

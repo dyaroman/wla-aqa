@@ -1,6 +1,8 @@
 <script setup>
 import { computed } from 'vue';
 
+import { reformatErrorMessage } from '@/misc/helpers.js';
+
 const props = defineProps({
   testResult: {
     type: Object,
@@ -15,26 +17,6 @@ const props = defineProps({
     required: true,
   },
 });
-
-function reformatErrorMessage(errorMsg) {
-  try {
-    const filterStart = errorMsg.indexOf('Filters: ');
-    if (filterStart === -1) return errorMsg;
-
-    const jsonStart = errorMsg.indexOf('{', filterStart);
-    const jsonString = errorMsg.slice(jsonStart, -1);
-    const parsedFilters = JSON.parse(JSON.parse(`"${jsonString}"`));
-    const formattedFilters = JSON.stringify(parsedFilters, null, 2);
-
-    return (
-      errorMsg.slice(0, filterStart) +
-      'Filters:\n' +
-      formattedFilters.replaceAll('\\', '')
-    );
-  } catch (e) {
-    return errorMsg;
-  }
-}
 
 const errorMessage = computed(() => {
   if (props.category === 'fail') {

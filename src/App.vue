@@ -1,10 +1,11 @@
 <script setup>
 import { onMounted, ref, watch, computed } from 'vue';
 
-import Loader from '@/Loader.vue';
-import BuildSelector from '@/BuildSelector.vue';
-import BuildPipelineInfo from '@/BuildPipelineInfo.vue';
-import TestResultsDashboard from '@/TestResultsDashboard.vue';
+import Loader from '@/components/Loader.vue';
+import BuildSelector from '@/components/BuildSelector.vue';
+import BuildPipelineInfo from '@/components/BuildPipelineInfo.vue';
+import TestResultsDashboard from '@/components/TestResultsDashboard.vue';
+import { updateBuildNumberInUrl } from '@/misc/helpers.js';
 
 const appInit = ref(false);
 const dataLoaded = ref(false);
@@ -67,16 +68,6 @@ async function loadBuildData() {
   buildInfo.value = buildInfoJson;
   testResults.value = testResultsJson;
   dataLoaded.value = true;
-}
-
-function updateBuildNumberInUrl(buildNumber) {
-  const url = new URL(window.location.href);
-  if (buildNumber) {
-    url.searchParams.set('build', buildNumber);
-  } else {
-    url.searchParams.delete('build');
-  }
-  window.history.replaceState({}, document.title, url.toString());
 }
 
 async function updateSelectedBuildNumber(newValue) {
