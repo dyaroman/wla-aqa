@@ -8,7 +8,7 @@ const props = defineProps({
     required: true,
     validator: (value) => ['pass', 'fail', 'skip'].includes(value),
   },
-  testsResults: {
+  testResults: {
     type: Array,
     required: true,
   },
@@ -18,7 +18,7 @@ const props = defineProps({
   },
 });
 
-const { type, testsResults } = props;
+const { type, testResults } = props;
 
 const title = computed(() => {
   let title = '';
@@ -33,7 +33,7 @@ const title = computed(() => {
       title += 'Skipped';
       break;
   }
-  title += `: ${testsResults.length}`;
+  title += `: ${testResults.length}`;
   return title;
 });
 </script>
@@ -41,8 +41,8 @@ const title = computed(() => {
 <template>
   <details
     class="list"
-    v-if="testsResults.length"
-    :open="type === 'fail' && testsResults.length > 0"
+    v-if="testResults.length"
+    :open="type === 'fail' && testResults.length > 0"
     :class="{
       pass: type === 'pass',
       fail: type === 'fail',
@@ -53,7 +53,7 @@ const title = computed(() => {
       {{ title }}
     </summary>
     <ol>
-      <li v-for="testResult in testsResults" :key="testResult.uuid">
+      <li v-for="testResult in testResults" :key="testResult.uuid">
         <TestResultItem :test-result :build-number :type />
       </li>
     </ol>
