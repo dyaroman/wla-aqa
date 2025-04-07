@@ -70,20 +70,6 @@ const title = computed(() => {
   </div>
 </template>
 
-<style lang="scss">
-.pass {
-  color: forestgreen;
-}
-
-.fail {
-  color: darkred;
-}
-
-.skip {
-  color: darkgrey;
-}
-</style>
-
 <style scoped lang="scss">
 .list {
   margin-top: 1rem;

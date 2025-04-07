@@ -1,0 +1,27 @@
+@use 'var';
+
+@mixin focus-styles($revert: false) {
+  outline: none;
+
+  @if ($revert) {
+    box-shadow: none;
+  } @else {
+    box-shadow:
+      0 0 0 var.$border-width var(--focus-inner-color),
+      0 0 0 2 * var.$border-width var(--focus-outer-color);
+  }
+}
+
+@mixin focus {
+  :focus {
+    @include focus-styles;
+  }
+
+  :focus:not(:focus-visible) {
+    @include focus-styles($revert: true);
+  }
+
+  :focus-visible {
+    @include focus-styles();
+  }
+}

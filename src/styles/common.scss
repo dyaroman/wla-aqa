@@ -1,7 +1,24 @@
+@use 'var';
+@use 'mixins';
+
+@include mixins.focus;
+
 body {
   margin: 0;
 
   font-family: Menlo, Monaco, Consolas, monospace;
+  font-size: 1rem;
+  line-height: 1.2;
+  color: var(--body-color);
+
+  background-color: var(--body-bg);
+}
+
+* {
+  font-family: inherit;
+  line-height: inherit;
+
+  box-sizing: border-box;
 }
 
 #app {
@@ -12,9 +29,37 @@ body {
 }
 
 a {
-  color: #0d6efd;
+  color: var(--link-color);
 }
 
 summary {
   cursor: pointer;
+}
+
+.pass {
+  color: var(--success-color);
+}
+
+.fail {
+  color: var(--fail-color);
+}
+
+.skip {
+  color: var(--skip-color);
+}
+
+.error-message {
+  display: flex;
+  flex-direction: column;
+  gap: var.$gap;
+  padding: 1rem 0;
+
+  font-size: 14px;
+
+  img {
+    max-width: 100%;
+    max-height: 100vh;
+
+    border: var.$border-width solid var(--fail-color);
+  }
 }
