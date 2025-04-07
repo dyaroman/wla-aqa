@@ -8,7 +8,7 @@ defineProps({
     type: String,
     default: '',
   },
-  type: {
+  category: {
     type: String,
     required: true,
   },
@@ -16,7 +16,7 @@ defineProps({
 </script>
 
 <template>
-  <details v-if="type === 'fail'">
+  <details v-if="category === 'fail'">
     <summary>{{ testResult.title }}</summary>
     <div class="error-message" v-if="testResult.fail">
       <img

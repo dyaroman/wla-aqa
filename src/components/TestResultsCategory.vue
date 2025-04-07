@@ -3,7 +3,7 @@ import { computed } from 'vue';
 import TestResultItem from '@/components/TestResultItem.vue';
 
 const props = defineProps({
-  type: {
+  category: {
     type: String,
     required: true,
     validator: (value) => ['pass', 'fail', 'skip'].includes(value),
@@ -18,11 +18,11 @@ const props = defineProps({
   },
 });
 
-const { type, testResults } = props;
+const { category, testResults } = props;
 
 const title = computed(() => {
   let title = '';
-  switch (type) {
+  switch (category) {
     case 'pass':
       title += 'Passed';
       break;
@@ -42,11 +42,11 @@ const title = computed(() => {
   <details
     class="list"
     v-if="testResults.length"
-    :open="type === 'fail' && testResults.length > 0"
+    :open="category === 'fail' && testResults.length > 0"
     :class="{
-      pass: type === 'pass',
-      fail: type === 'fail',
-      skip: type === 'skip',
+      pass: category === 'pass',
+      fail: category === 'fail',
+      skip: category === 'skip',
     }"
   >
     <summary>
@@ -54,16 +54,16 @@ const title = computed(() => {
     </summary>
     <ol>
       <li v-for="testResult in testResults" :key="testResult.uuid">
-        <TestResultItem :test-result :build-number :type />
+        <TestResultItem :test-result :build-number :category />
       </li>
     </ol>
   </details>
   <div
     v-else
     :class="{
-      pass: type === 'pass',
-      fail: type === 'fail',
-      skip: type === 'skip',
+      pass: category === 'pass',
+      fail: category === 'fail',
+      skip: category === 'skip',
     }"
   >
     {{ title }}
