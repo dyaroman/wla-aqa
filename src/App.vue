@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref, watch } from 'vue';
 import Loader from '@/components/Loader.vue';
-import SelectBuild from '@/components/SelectBuild.vue';
+import BuildSelector from '@/components/BuildSelector.vue';
 import PipelineInfo from '@/components/PipelineInfo.vue';
 import TestResultsDashboard from '@/components/TestResultsDashboard.vue';
 
@@ -106,7 +106,7 @@ onMounted(async () => {
   <Loader v-if="!appInit" fixed />
   <template v-else>
     <h3><a href="/">AQA</a></h3>
-    <SelectBuild
+    <BuildSelector
       :builds="buildsInfo"
       :model-value="selectedBuildNumber.toString()"
       @update:model-Value="updateSelectedBuildNumber"
