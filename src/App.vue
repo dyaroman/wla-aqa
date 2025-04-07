@@ -118,7 +118,7 @@ onMounted(async () => {
         :build-number="selectedBuildNumber.toString()"
       />
       <TestResultsDashboard
-        :tests-results="testResults"
+        :test-results
         :build-number="selectedBuildNumber.toString()"
       />
     </template>

@@ -4,7 +4,7 @@ import { onMounted } from 'vue';
 import TestResultsCategory from '@/components/TestResultsCategory.vue';
 
 const props = defineProps({
-  testsResults: {
+  testResults: {
     type: Array,
     required: true,
   },
@@ -18,7 +18,7 @@ const passed = [];
 const failed = [];
 const skipped = [];
 
-for (const testResult of props.testsResults) {
+for (const testResult of props.testResults) {
   if (testResult.pass) {
     passed.push(testResult);
   } else if (testResult.fail) {
@@ -37,7 +37,7 @@ function updateFavicon(isGreen) {
 }
 
 onMounted(() => {
-  document.title = `[${failed.length}/${props.testsResults.length}]: AQA`;
+  document.title = `[${failed.length}/${props.testResults.length}]: AQA`;
   updateFavicon(failed.length === 0);
 });
 </script>
