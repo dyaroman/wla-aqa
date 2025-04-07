@@ -1,4 +1,5 @@
 import { fileURLToPath, URL } from 'node:url';
+import { execSync } from 'child_process';
 
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
@@ -12,6 +13,11 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src/components', import.meta.url)),
     },
+  },
+  define: {
+    __APP_COMMIT__: JSON.stringify(
+      execSync('git rev-parse HEAD').toString().trim().slice(0, 8),
+    ),
   },
   server: {
     hmr: false,
