@@ -5,12 +5,12 @@ import TestResultsCategory from '@/components/TestResultsCategory.vue';
 import { updateFavicon } from '@/misc/helpers.js';
 
 const { testResults } = defineProps({
-  testResults: {
-    type: Array,
-    required: true,
-  },
   buildNumber: {
     type: String,
+    required: true,
+  },
+  testResults: {
+    type: Array,
     required: true,
   },
 });

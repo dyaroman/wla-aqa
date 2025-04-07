@@ -2,6 +2,10 @@
 import TestResultItem from '@/components/TestResultItem.vue';
 
 const { category, testResults } = defineProps({
+  buildNumber: {
+    type: String,
+    required: false,
+  },
   category: {
     type: String,
     required: true,
@@ -10,10 +14,6 @@ const { category, testResults } = defineProps({
   testResults: {
     type: Array,
     required: true,
-  },
-  buildNumber: {
-    type: String,
-    required: false,
   },
 });
 

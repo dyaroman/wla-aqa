@@ -1,17 +1,17 @@
 <script setup>
 import { reformatErrorMessage } from '@/misc/helpers.js';
 
-const { category, testResult, buildNumber } = defineProps({
-  testResult: {
-    type: Object,
-    required: true,
-  },
+const { buildNumber, category, testResult } = defineProps({
   buildNumber: {
     type: String,
     default: '',
   },
   category: {
     type: String,
+    required: true,
+  },
+  testResult: {
+    type: Object,
     required: true,
   },
 });
