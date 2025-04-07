@@ -70,16 +70,3 @@ const title = computed(() => {
     {{ title }}
   </div>
 </template>
-
-<style scoped lang="scss">
-.list {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-}
-
-ol {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-</style>

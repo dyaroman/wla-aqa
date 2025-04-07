@@ -68,9 +68,3 @@ const src = computed(() => {
     {{ testResult.title }}
   </template>
 </template>
-
-<style scoped>
-pre {
-  white-space: pre-wrap;
-}
-</style>

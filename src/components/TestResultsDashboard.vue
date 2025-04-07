@@ -44,5 +44,3 @@ onMounted(() => {
   <TestResultsCategory category="pass" :test-results="passed" />
   <TestResultsCategory category="skip" :test-results="skipped" />
 </template>
-
-<style scoped lang="scss"></style>
