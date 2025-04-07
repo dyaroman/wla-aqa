@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted } from 'vue';
 
-import TestResultsCategory from '@/components/TestResultsCategory.vue';
+import TestResultsCategory from '@/TestResultsCategory.vue';
 
 const props = defineProps({
   testResults: {

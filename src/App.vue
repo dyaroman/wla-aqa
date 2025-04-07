@@ -1,9 +1,10 @@
 <script setup>
 import { onMounted, ref, watch } from 'vue';
-import Loader from '@/components/Loader.vue';
-import BuildSelector from '@/components/BuildSelector.vue';
-import BuildPipelineInfo from '@/components/BuildPipelineInfo.vue';
-import TestResultsDashboard from '@/components/TestResultsDashboard.vue';
+
+import Loader from '@/Loader.vue';
+import BuildSelector from '@/BuildSelector.vue';
+import BuildPipelineInfo from '@/BuildPipelineInfo.vue';
+import TestResultsDashboard from '@/TestResultsDashboard.vue';
 
 const appInit = ref(false);
 const dataLoaded = ref(false);

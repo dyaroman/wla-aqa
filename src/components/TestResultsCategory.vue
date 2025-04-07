@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue';
-import TestResultItem from '@/components/TestResultItem.vue';
+
+import TestResultItem from '@/TestResultItem.vue';
 
 const props = defineProps({
   category: {
