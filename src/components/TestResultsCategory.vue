@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue';
-import TestResult from '@/components/TestResult.vue';
+import TestResultItem from '@/components/TestResultItem.vue';
 
 const props = defineProps({
   type: {
@@ -54,7 +54,7 @@ const title = computed(() => {
     </summary>
     <ol>
       <li v-for="testResult in testsResults" :key="testResult.uuid">
-        <TestResult :test-result :build-number :type />
+        <TestResultItem :test-result :build-number :type />
       </li>
     </ol>
   </details>
