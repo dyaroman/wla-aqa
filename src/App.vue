@@ -9,7 +9,7 @@ const appInit = ref(false);
 const dataLoaded = ref(false);
 const buildsInfo = ref([]); // previous + latest
 const buildInfo = ref(null);
-const testsResultsData = ref([]);
+const testResults = ref([]);
 const selectedBuildNumber = ref('');
 
 async function loadBuildsInfo() {
@@ -68,7 +68,7 @@ async function loadBuildData() {
     ).then((res) => res.json()),
   ]);
   buildInfo.value = buildInfoJson;
-  testsResultsData.value = testResultsJson;
+  testResults.value = testResultsJson;
   dataLoaded.value = true;
 }
 
@@ -118,7 +118,7 @@ onMounted(async () => {
         :build-number="selectedBuildNumber.toString()"
       />
       <TestResultsDashboard
-        :tests-results="testsResultsData"
+        :tests-results="testResults"
         :build-number="selectedBuildNumber.toString()"
       />
     </template>
