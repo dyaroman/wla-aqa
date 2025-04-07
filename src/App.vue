@@ -110,7 +110,7 @@ onMounted(async () => {
     <BuildSelector
       :builds="buildsInfo"
       :model-value="selectedBuildNumber.toString()"
-      @update:model-Value="updateSelectedBuildNumber"
+      @update:model-value="updateSelectedBuildNumber"
     />
     <Loader v-if="!dataLoaded" />
     <template v-else>
