@@ -37,6 +37,8 @@ summary {
 }
 
 pre {
+  margin: 0;
+
   white-space: pre-wrap;
 }
 
@@ -59,12 +61,20 @@ pre {
   padding: 1rem 0;
 
   font-size: 14px;
+}
+
+.screenshot {
+  position: relative;
+  min-height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border: var.$border-width solid var(--fail-color);
 
   img {
     max-width: 100%;
     max-height: 100vh;
-
-    border: var.$border-width solid var(--fail-color);
   }
 }
 
