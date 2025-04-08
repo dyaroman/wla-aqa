@@ -53,7 +53,7 @@ const isOpen = category === 'fail' && testResults.length > 0;
     </summary>
     <ol>
       <li v-for="testResult in testResults" :key="testResult.uuid">
-        <TestResultItem :test-result :build-number :category />
+        <TestResultItem :build-number :category :test-result />
       </li>
     </ol>
   </details>
