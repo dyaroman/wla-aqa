@@ -19,6 +19,7 @@ const { buildNumber, category, testResult } = defineProps({
   },
 });
 
+const title = `${testResult.emoji} ${testResult.title}`;
 const errorMessage =
   category === 'fail' ? reformatErrorMessage(testResult.err?.message) : null;
 
@@ -35,7 +36,7 @@ const startScreenshotLoading = () => {
 
 <template>
   <details v-if="category === 'fail'">
-    <summary>{{ testResult.title }}</summary>
+    <summary>{{ title }}</summary>
     <div class="error-message" v-if="testResult.fail">
       <pre v-if="errorMessage.includes('{')">{{ errorMessage }}</pre>
       <template v-else>
@@ -56,7 +57,5 @@ const startScreenshotLoading = () => {
       </details>
     </div>
   </details>
-  <template v-else>
-    {{ testResult.title }}
-  </template>
+  <template v-else> {{ title }} </template>
 </template>

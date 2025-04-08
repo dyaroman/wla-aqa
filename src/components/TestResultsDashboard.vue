@@ -3,6 +3,7 @@ import { computed, onMounted } from 'vue';
 
 import TestResultsCategory from '@/components/TestResultsCategory.vue';
 import { updateFavicon } from '@/misc/helpers.js';
+import { getFailEmoji, getPassEmoji, getSkipEmoji } from '@/misc/emojis.js';
 
 const { testResults } = defineProps({
   buildNumber: {
@@ -15,9 +16,30 @@ const { testResults } = defineProps({
   },
 });
 
-const passed = computed(() => testResults.filter((test) => test.pass));
-const failed = computed(() => testResults.filter((test) => test.fail));
-const skipped = computed(() => testResults.filter((test) => test.skipped));
+const passed = computed(() =>
+  testResults
+    .filter((test) => test.pass)
+    .map((test) => {
+      test['emoji'] = getPassEmoji();
+      return test;
+    }),
+);
+const failed = computed(() =>
+  testResults
+    .filter((test) => test.fail)
+    .map((test) => {
+      test['emoji'] = getFailEmoji();
+      return test;
+    }),
+);
+const skipped = computed(() =>
+  testResults
+    .filter((test) => test.skipped)
+    .map((test) => {
+      test['emoji'] = getSkipEmoji();
+      return test;
+    }),
+);
 
 const documentTitle = computed(
   () => `[${failed.value.length}/${testResults.length}]: AQA`,
