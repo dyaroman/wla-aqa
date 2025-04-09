@@ -1,14 +1,13 @@
 <script setup>
-import { ref } from 'vue';
+import { inject, ref } from 'vue';
 
 import Loader from '@/components/Loader.vue';
-import { reformatErrorMessage } from '@/misc/helpers.js';
+import { getBuildPath, reformatErrorMessage } from '@/misc/helpers.js';
 
-const { buildNumber, category, testResult } = defineProps({
-  buildNumber: {
-    type: String,
-    default: '',
-  },
+const buildNumber = inject('buildNumber');
+const latestBuildNumber = inject('latestBuildNumber');
+
+const { category, testResult } = defineProps({
   category: {
     type: String,
     required: true,
@@ -19,16 +18,17 @@ const { buildNumber, category, testResult } = defineProps({
   },
 });
 
-const title = `${testResult.emoji} ${testResult.title}`;
+const title = `${testResult['emoji']} ${testResult['title']}`;
 const errorMessage =
-  category === 'fail' ? reformatErrorMessage(testResult.err?.message) : null;
+  category === 'fail' ? reformatErrorMessage(testResult['err']?.message) : null;
 
 const screenshotSrc = ref(null);
 const isScreenshotLoading = ref(false);
 
 const startScreenshotLoading = () => {
   if (!screenshotSrc.value) {
-    screenshotSrc.value = `https://dyaroman.github.io/wla-e2e/data/${buildNumber ? `${buildNumber}/` : ''}images/${testResult.img}`;
+    const path = getBuildPath(buildNumber['value'], latestBuildNumber['value']);
+    screenshotSrc.value = `https://dyaroman.github.io/wla-e2e/data/${path}images/${testResult['img']}`;
     isScreenshotLoading.value = true;
   }
 };
@@ -37,7 +37,7 @@ const startScreenshotLoading = () => {
 <template>
   <details v-if="category === 'fail'">
     <summary>{{ title }}</summary>
-    <div class="error-message" v-if="testResult.fail">
+    <div class="error-message" v-if="testResult['fail']">
       <pre v-if="errorMessage.includes('{')">{{ errorMessage }}</pre>
       <template v-else>
         {{ errorMessage?.replaceAll('\\', '') }}
@@ -57,5 +57,5 @@ const startScreenshotLoading = () => {
       </details>
     </div>
   </details>
-  <template v-else> {{ title }} </template>
+  <template v-else>{{ title }}</template>
 </template>

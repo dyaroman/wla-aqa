@@ -2,10 +2,6 @@
 import TestResultItem from '@/components/TestResultItem.vue';
 
 const { category, testResults } = defineProps({
-  buildNumber: {
-    type: String,
-    required: false,
-  },
   category: {
     type: String,
     required: true,
@@ -53,7 +49,7 @@ const isOpen = category === 'fail' && testResults.length > 0;
     </summary>
     <ol>
       <li v-for="testResult in testResults" :key="testResult.uuid">
-        <TestResultItem :build-number :category :test-result />
+        <TestResultItem :category :test-result />
       </li>
     </ol>
   </details>

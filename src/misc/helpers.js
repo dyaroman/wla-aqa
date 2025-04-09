@@ -56,3 +56,10 @@ export function updateBuildNumberInUrl(buildNumber) {
   }
   window.history.replaceState({}, document.title, url.toString());
 }
+
+export function getBuildPath(buildNumber, latestBuildNumber) {
+  if (buildNumber === latestBuildNumber) {
+    return '';
+  }
+  return buildNumber ? `${buildNumber}/` : '';
+}

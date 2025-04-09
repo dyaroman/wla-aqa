@@ -6,10 +6,6 @@ import { updateFavicon } from '@/misc/helpers.js';
 import { getFailEmoji, getPassEmoji, getSkipEmoji } from '@/misc/emojis.js';
 
 const { testResults } = defineProps({
-  buildNumber: {
-    type: String,
-    required: true,
-  },
   testResults: {
     type: Array,
     required: true,
@@ -53,7 +49,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <TestResultsCategory category="fail" :test-results="failed" :build-number />
+  <TestResultsCategory category="fail" :test-results="failed" />
   <TestResultsCategory category="pass" :test-results="passed" />
   <TestResultsCategory category="skip" :test-results="skipped" />
 </template>

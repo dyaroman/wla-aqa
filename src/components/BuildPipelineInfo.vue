@@ -1,7 +1,7 @@
 <script setup>
 const { buildId } = defineProps({
   buildId: {
-    type: String,
+    type: Number,
     required: true,
   },
   buildNumber: {

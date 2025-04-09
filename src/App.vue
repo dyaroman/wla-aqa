@@ -1,16 +1,16 @@
 <script setup>
-import { onMounted, ref, watch, computed } from 'vue';
+import { computed, onMounted, provide, readonly, ref, watch } from 'vue';
 
 import Loader from '@/components/Loader.vue';
 import BuildSelector from '@/components/BuildSelector.vue';
 import BuildPipelineInfo from '@/components/BuildPipelineInfo.vue';
 import TestResultsDashboard from '@/components/TestResultsDashboard.vue';
-import { updateBuildNumberInUrl } from '@/misc/helpers.js';
+import { getBuildPath, updateBuildNumberInUrl } from '@/misc/helpers.js';
 
 const appInit = ref(false);
 const dataLoaded = ref(false);
 const buildsInfo = ref([]); // previous + latest
-const selectedBuildNumber = ref('');
+const buildNumber = ref('');
 const buildInfo = ref(null);
 const testResults = ref([]);
 
@@ -18,28 +18,9 @@ const latestBuildNumber = computed(() => buildsInfo.value[0]?.number || '');
 const buildNumberFromUrl = new URLSearchParams(window.location.search).get(
   'build',
 );
-const currentBuildNumber = computed(() => {
-  if (!buildNumberFromUrl) {
-    return latestBuildNumber.value;
-  }
 
-  const validBuildNumber = buildsInfo.value.find(
-    (build) => build.number.toString() === buildNumberFromUrl,
-  )?.number;
-
-  return validBuildNumber || latestBuildNumber.value;
-});
-
-const buildNumber = computed(() => {
-  let buildNumber = selectedBuildNumber.value;
-  if (buildNumber.toString() === latestBuildNumber.value.toString()) {
-    buildNumber = '';
-  }
-  if (buildNumber !== '') {
-    buildNumber = `${buildNumber}/`;
-  }
-  return buildNumber;
-});
+provide('buildNumber', readonly(buildNumber));
+provide('latestBuildNumber', readonly(latestBuildNumber));
 
 async function loadBuildsInfo() {
   const [previousBuildsInfo, latestBuildInfo] = await Promise.all([
@@ -53,17 +34,23 @@ async function loadBuildsInfo() {
         timestamp: json['buildTimestamp'],
       })),
   ]);
-  buildsInfo.value = [...previousBuildsInfo, latestBuildInfo].reverse();
+  buildsInfo.value = [...previousBuildsInfo, latestBuildInfo]
+    .map((build) => {
+      build['number'] = build['number'].toString();
+      return build;
+    })
+    .reverse();
 }
 
 async function loadBuildData() {
+  const path = getBuildPath(buildNumber.value, latestBuildNumber.value);
   const [buildInfoJson, testResultsJson] = await Promise.all([
-    fetch(
-      `https://dyaroman.github.io/wla-e2e/data/${buildNumber.value}build-info.json`,
-    ).then((res) => res.json()),
-    fetch(
-      `https://dyaroman.github.io/wla-e2e/data/${buildNumber.value}results.json`,
-    ).then((res) => res.json()),
+    fetch(`https://dyaroman.github.io/wla-e2e/data/${path}build-info.json`).then(
+      (res) => res.json(),
+    ),
+    fetch(`https://dyaroman.github.io/wla-e2e/data/${path}results.json`).then(
+      (res) => res.json(),
+    ),
   ]);
   buildInfo.value = buildInfoJson;
   testResults.value = testResultsJson;
@@ -71,17 +58,25 @@ async function loadBuildData() {
 }
 
 async function updateSelectedBuildNumber(newValue) {
-  selectedBuildNumber.value = newValue;
+  buildNumber.value = newValue;
   dataLoaded.value = false;
   await loadBuildData();
 }
 
-watch(selectedBuildNumber, (newValue) => updateBuildNumberInUrl(newValue));
+function initializeBuildNumber() {
+  buildNumber.value =
+    (buildNumberFromUrl &&
+      buildsInfo.value.find((build) => build['number'] === buildNumberFromUrl)
+        ?.number) ||
+    latestBuildNumber.value;
+}
+
+watch(buildNumber, (newValue) => updateBuildNumberInUrl(newValue));
 
 onMounted(async () => {
   try {
     await loadBuildsInfo();
-    selectedBuildNumber.value = currentBuildNumber.value;
+    initializeBuildNumber();
     await loadBuildData();
     appInit.value = true;
   } catch (e) {
@@ -96,19 +91,13 @@ onMounted(async () => {
     <h3><a href="/">AQA</a></h3>
     <BuildSelector
       :builds="buildsInfo"
-      :model-value="selectedBuildNumber.toString()"
+      :model-value="buildNumber"
       @update:model-value="updateSelectedBuildNumber"
     />
     <Loader v-if="!dataLoaded" />
     <template v-else>
-      <BuildPipelineInfo
-        :build-id="buildInfo.buildId.toString()"
-        :build-number="selectedBuildNumber.toString()"
-      />
-      <TestResultsDashboard
-        :build-number="selectedBuildNumber.toString()"
-        :test-results
-      />
+      <BuildPipelineInfo :build-id="buildInfo.buildId" :build-number />
+      <TestResultsDashboard :test-results />
     </template>
   </template>
 </template>
