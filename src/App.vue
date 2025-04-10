@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, provide, readonly, ref, watch } from 'vue';
+import { computed, onMounted, provide, readonly, ref, watchEffect } from 'vue';
 
 import Loader from '@/components/Loader.vue';
 import BuildSelector from '@/components/BuildSelector.vue';
@@ -71,7 +71,7 @@ function initializeBuildNumber() {
     latestBuildNumber.value;
 }
 
-watch(buildNumber, (newValue) => updateBuildNumberInUrl(newValue));
+watchEffect(() => updateBuildNumberInUrl(buildNumber.value));
 
 onMounted(async () => {
   try {
