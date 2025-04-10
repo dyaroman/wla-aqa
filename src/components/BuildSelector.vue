@@ -10,6 +10,10 @@ defineProps({
     type: String,
     default: '',
   },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const emit = defineEmits(['update:modelValue']);
@@ -22,7 +26,12 @@ function updateValue(event) {
 <template>
   <section>
     <h4>Select build:</h4>
-    <select class="select" :value="modelValue" @change="updateValue">
+    <select
+      class="select"
+      :value="modelValue"
+      @change="updateValue"
+      :disabled="disabled"
+    >
       <option value="" disabled>Select build</option>
       <option v-for="build in builds" :key="build.number" :value="build.number">
         {{ reformatBuildNumber(build.number) }} - {{ timeAgo(build.timestamp) }}

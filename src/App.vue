@@ -92,6 +92,7 @@ onMounted(async () => {
     <BuildSelector
       :builds="buildsInfo"
       :model-value="buildNumber"
+      :disabled="!dataLoaded"
       @update:model-value="updateSelectedBuildNumber"
     />
     <Loader v-if="!dataLoaded" />
