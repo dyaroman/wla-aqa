@@ -16,6 +16,7 @@ const { category, testResults } = defineProps({
 });
 
 const isAllItemsOpen = ref(false);
+const isAllScreenshotsOpen = ref(false);
 
 let title = '';
 switch (category) {
@@ -39,6 +40,10 @@ const initialOpen = category === 'fail' && testResults.length > 0;
 const toggleAllItemsOpen = () => {
   isAllItemsOpen.value = !isAllItemsOpen.value;
 };
+
+const toggleAllScreenshotsOpen = () => {
+  isAllScreenshotsOpen.value = !isAllScreenshotsOpen.value;
+};
 </script>
 
 <template>
@@ -61,7 +66,9 @@ const toggleAllItemsOpen = () => {
           :category
           :test-result
           :isAllItemsOpen
+          :isAllScreenshotsOpen
           @update:is-all-items-open="toggleAllItemsOpen"
+          @update:is-all-screenshots-open="toggleAllScreenshotsOpen"
         />
       </li>
     </ol>

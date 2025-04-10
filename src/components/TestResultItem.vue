@@ -1,5 +1,5 @@
 <script setup>
-import { inject, ref } from 'vue';
+import { inject, ref, watchEffect } from 'vue';
 
 import Loader from '@/components/Loader.vue';
 import { getBuildPath, reformatErrorMessage } from '@/misc/helpers.js';
@@ -7,7 +7,7 @@ import { getBuildPath, reformatErrorMessage } from '@/misc/helpers.js';
 const buildNumber = inject('buildNumber');
 const latestBuildNumber = inject('latestBuildNumber');
 
-const { category, testResult } = defineProps({
+const { category, testResult, isAllScreenshotsOpen } = defineProps({
   category: {
     type: String,
     required: true,
@@ -21,12 +21,24 @@ const { category, testResult } = defineProps({
     required: false,
     default: false,
   },
+  isAllScreenshotsOpen: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
 });
 
-const emit = defineEmits(['update:isAllItemsOpen']);
+const emit = defineEmits([
+  'update:isAllItemsOpen',
+  'update:isAllScreenshotsOpen',
+]);
 
-function toggleAllItemsOpen(isOpen) {
-  emit('update:isAllItemsOpen', isOpen);
+function toggleAllItemsOpen() {
+  emit('update:isAllItemsOpen');
+}
+
+function toggleAllScreenshotsOpen() {
+  emit('update:isAllScreenshotsOpen');
 }
 
 const title = `${testResult['emoji']} ${testResult['title']}`;
@@ -43,6 +55,21 @@ const startScreenshotLoading = () => {
     isScreenshotLoading.value = true;
   }
 };
+
+function onScreenshotClick(event) {
+  startScreenshotLoading();
+
+  if (event.metaKey) {
+    event.preventDefault();
+    toggleAllScreenshotsOpen(!isAllScreenshotsOpen);
+  }
+}
+
+watchEffect(() => {
+  if (isAllScreenshotsOpen) {
+    startScreenshotLoading();
+  }
+});
 </script>
 
 <template>
@@ -55,8 +82,8 @@ const startScreenshotLoading = () => {
       <template v-else>
         {{ errorMessage?.replaceAll('\\', '') }}
       </template>
-      <details>
-        <summary @click="startScreenshotLoading">Screenshot</summary>
+      <details :open="isAllScreenshotsOpen">
+        <summary @click="onScreenshotClick">Screenshot</summary>
         <div class="screenshot">
           <Loader v-if="isScreenshotLoading" />
           <img
