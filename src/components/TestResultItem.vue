@@ -16,7 +16,18 @@ const { category, testResult } = defineProps({
     type: Object,
     required: true,
   },
+  isAllItemsOpen: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
 });
+
+const emit = defineEmits(['update:isAllItemsOpen']);
+
+function toggleAllItemsOpen(isOpen) {
+  emit('update:isAllItemsOpen', isOpen);
+}
 
 const title = `${testResult['emoji']} ${testResult['title']}`;
 const errorMessage =
@@ -35,8 +46,10 @@ const startScreenshotLoading = () => {
 </script>
 
 <template>
-  <details v-if="category === 'fail'">
-    <summary>{{ title }}</summary>
+  <details v-if="category === 'fail'" :open="isAllItemsOpen">
+    <summary @click.meta.prevent="toggleAllItemsOpen(!isAllItemsOpen)">
+      {{ title }}
+    </summary>
     <div class="error-message" v-if="testResult['fail']">
       <pre v-if="errorMessage.includes('{')">{{ errorMessage }}</pre>
       <template v-else>

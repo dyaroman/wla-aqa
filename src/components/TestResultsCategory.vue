@@ -1,4 +1,6 @@
 <script setup>
+import { ref } from 'vue';
+
 import TestResultItem from '@/components/TestResultItem.vue';
 
 const { category, testResults } = defineProps({
@@ -12,6 +14,8 @@ const { category, testResults } = defineProps({
     required: true,
   },
 });
+
+const isAllItemsOpen = ref(false);
 
 let title = '';
 switch (category) {
@@ -30,14 +34,18 @@ switch (category) {
 }
 title += `: ${testResults.length}`;
 
-const isOpen = category === 'fail' && testResults.length > 0;
+const initialOpen = category === 'fail' && testResults.length > 0;
+
+const toggleAllItemsOpen = () => {
+  isAllItemsOpen.value = !isAllItemsOpen.value;
+};
 </script>
 
 <template>
   <details
     class="list"
     v-if="testResults.length"
-    :open="isOpen"
+    :open="initialOpen"
     :class="{
       pass: category === 'pass',
       fail: category === 'fail',
@@ -49,7 +57,12 @@ const isOpen = category === 'fail' && testResults.length > 0;
     </summary>
     <ol>
       <li v-for="testResult in testResults" :key="testResult.uuid">
-        <TestResultItem :category :test-result />
+        <TestResultItem
+          :category
+          :test-result
+          :isAllItemsOpen
+          @update:is-all-items-open="toggleAllItemsOpen"
+        />
       </li>
     </ol>
   </details>
