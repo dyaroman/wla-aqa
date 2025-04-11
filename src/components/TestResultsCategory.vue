@@ -36,14 +36,6 @@ switch (category) {
 title += `: ${testResults.length}`;
 
 const initialOpen = category === 'fail' && testResults.length > 0;
-
-const toggleAllItemsOpen = () => {
-  isAllItemsOpen.value = !isAllItemsOpen.value;
-};
-
-const toggleAllScreenshotsOpen = () => {
-  isAllScreenshotsOpen.value = !isAllScreenshotsOpen.value;
-};
 </script>
 
 <template>
@@ -67,8 +59,10 @@ const toggleAllScreenshotsOpen = () => {
           :test-result
           :isAllItemsOpen
           :isAllScreenshotsOpen
-          @update:is-all-items-open="toggleAllItemsOpen"
-          @update:is-all-screenshots-open="toggleAllScreenshotsOpen"
+          @update:is-all-items-open="isAllItemsOpen = !isAllItemsOpen"
+          @update:is-all-screenshots-open="
+            isAllScreenshotsOpen = !isAllScreenshotsOpen
+          "
         />
       </li>
     </ol>
