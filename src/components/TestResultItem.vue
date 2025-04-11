@@ -1,13 +1,13 @@
 <script setup>
-import { inject, ref, watchEffect } from 'vue';
+import { inject } from 'vue';
 
-import Loader from '@/components/Loader.vue';
+import ImageWithLoader from '@/components/ImageWithLoader.vue';
 import { getBuildPath, reformatErrorMessage } from '@/misc/helpers.js';
 
 const buildNumber = inject('buildNumber');
 const latestBuildNumber = inject('latestBuildNumber');
 
-const { category, testResult, isAllScreenshotsOpen } = defineProps({
+const { category, testResult } = defineProps({
   category: {
     type: String,
     required: true,
@@ -28,53 +28,18 @@ const { category, testResult, isAllScreenshotsOpen } = defineProps({
   },
 });
 
-const emit = defineEmits([
-  'update:isAllItemsOpen',
-  'update:isAllScreenshotsOpen',
-]);
-
-function toggleAllItemsOpen() {
-  emit('update:isAllItemsOpen');
-}
-
-function toggleAllScreenshotsOpen() {
-  emit('update:isAllScreenshotsOpen');
-}
+defineEmits(['update:isAllItemsOpen', 'update:isAllScreenshotsOpen']);
 
 const title = `${testResult['emoji']} ${testResult['title']}`;
 const errorMessage =
   category === 'fail' ? reformatErrorMessage(testResult['err']?.message) : null;
-
-const screenshotSrc = ref(null);
-const isScreenshotLoading = ref(false);
-
-const startScreenshotLoading = () => {
-  if (!screenshotSrc.value) {
-    const path = getBuildPath(buildNumber['value'], latestBuildNumber['value']);
-    screenshotSrc.value = `https://dyaroman.github.io/wla-e2e/data/${path}images/${testResult['img']}`;
-    isScreenshotLoading.value = true;
-  }
-};
-
-function onScreenshotClick(event) {
-  startScreenshotLoading();
-
-  if (event.metaKey) {
-    event.preventDefault();
-    toggleAllScreenshotsOpen(!isAllScreenshotsOpen);
-  }
-}
-
-watchEffect(() => {
-  if (isAllScreenshotsOpen) {
-    startScreenshotLoading();
-  }
-});
+const path = getBuildPath(buildNumber['value'], latestBuildNumber['value']);
+const src = `https://dyaroman.github.io/wla-e2e/data/${path}images/${testResult['img']}`;
 </script>
 
 <template>
   <details v-if="category === 'fail'" :open="isAllItemsOpen">
-    <summary @click.meta.prevent="toggleAllItemsOpen(!isAllItemsOpen)">
+    <summary @click.alt.prevent="$emit('update:isAllItemsOpen')">
       {{ title }}
     </summary>
     <div class="error-message" v-if="testResult['fail']">
@@ -83,16 +48,11 @@ watchEffect(() => {
         {{ errorMessage?.replaceAll('\\', '') }}
       </template>
       <details :open="isAllScreenshotsOpen">
-        <summary @click="onScreenshotClick">Screenshot</summary>
+        <summary @click.alt.prevent="$emit('update:isAllScreenshotsOpen')">
+          Screenshot
+        </summary>
         <div class="screenshot">
-          <Loader v-if="isScreenshotLoading" />
-          <img
-            v-show="!isScreenshotLoading && screenshotSrc"
-            :src="screenshotSrc"
-            alt="Failed to load screenshot"
-            @load="isScreenshotLoading = false"
-            @error="isScreenshotLoading = false"
-          />
+          <ImageWithLoader :src alt="Failed to load screenshot" />
         </div>
       </details>
     </div>
