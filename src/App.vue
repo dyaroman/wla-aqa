@@ -16,6 +16,7 @@ const buildInfo = ref(null);
 const testResults = ref([]);
 const allResultsOpen = ref(false);
 const allScreenshotsOpen = ref(false);
+const conclusionImage = ref(null);
 
 const latestBuildNumber = computed(() => buildsInfo.value[0]?.number || '');
 const hasFailedTests = computed(
@@ -64,7 +65,16 @@ async function loadBuildData() {
   testResults.value = testResultsJson;
   allResultsOpen.value = false;
   allScreenshotsOpen.value = false;
+  await loadConclusionImage();
   dataLoaded.value = true;
+}
+
+async function loadConclusionImage() {
+  await fetch(
+    `https://yesno.wtf/api?force=${hasFailedTests.value ? 'no' : 'yes'}`,
+  )
+    .then((res) => res.json())
+    .then((json) => (conclusionImage.value = json.image));
 }
 
 async function updateSelectedBuildNumber(newValue) {
@@ -107,6 +117,9 @@ onMounted(async () => {
     />
     <Loader v-if="!dataLoaded" />
     <template v-else>
+      <section v-if="conclusionImage" class="conclusion-image">
+        <img :src="conclusionImage" alt="Conclusion Image" />
+      </section>
       <BuildPipelineInfo :build-id="buildInfo.buildId" :build-number />
       <TestDetailsToggler
         v-if="hasFailedTests"

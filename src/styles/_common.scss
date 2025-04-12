@@ -88,3 +88,15 @@ ol {
   flex-direction: column;
   gap: 0.5rem;
 }
+
+.conclusion-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem 0;
+
+  img {
+    max-width: 100%;
+    max-height: 100vh;
+  }
+}
