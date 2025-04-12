@@ -70,11 +70,16 @@ async function loadBuildData() {
 }
 
 async function loadConclusionImage() {
+  conclusionImage.value = null;
+
   await fetch(
     `https://yesno.wtf/api?force=${hasFailedTests.value ? 'no' : 'yes'}`,
   )
     .then((res) => res.json())
-    .then((json) => (conclusionImage.value = json.image));
+    .then((json) => (conclusionImage.value = json.image))
+    .catch((error) =>
+      console.log('Failed to load conclusion image:', error.message),
+    );
 }
 
 async function updateSelectedBuildNumber(newValue) {
@@ -99,8 +104,8 @@ onMounted(async () => {
     initializeBuildNumber();
     await loadBuildData();
     appInit.value = true;
-  } catch (e) {
-    console.error('Error fetching data:', e);
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
   }
 });
 </script>
