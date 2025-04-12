@@ -104,8 +104,8 @@ onMounted(async () => {
     <template v-else>
       <BuildPipelineInfo :build-id="buildInfo.buildId" :build-number />
       <TestDetailsToggler
-        @toggle:results="allResultsOpen = !allResultsOpen"
-        @toggle:screenshots="allScreenshotsOpen = !allScreenshotsOpen"
+        @toggle:results="(isOpen) => (allResultsOpen = isOpen)"
+        @toggle:screenshots="(isOpen) => (allScreenshotsOpen = isOpen)"
       />
       <TestResultsDashboard :test-results />
     </template>

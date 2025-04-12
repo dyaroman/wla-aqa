@@ -9,5 +9,9 @@
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
+
+    .btn {
+      width: calc(50% - var.$gap / 2);
+    }
   }
 }

@@ -6,14 +6,19 @@ const emit = defineEmits(['toggle:results', 'toggle:screenshots']);
 const resultsOpen = ref(false);
 const screenshotsOpen = ref(false);
 
-function toggleResults(newValue) {
-  resultsOpen.value = newValue;
-  emit('toggle:results', newValue);
+function toggleResults(isOpen) {
+  resultsOpen.value = isOpen;
+  emit('toggle:results', isOpen);
 }
 
-function toggleScreenshots(newValue) {
-  screenshotsOpen.value = newValue;
-  emit('toggle:screenshots', newValue);
+function toggleScreenshots(isOpen) {
+  screenshotsOpen.value = isOpen;
+  emit('toggle:screenshots', isOpen);
+
+  if (isOpen) {
+    resultsOpen.value = true;
+    emit('toggle:results', true);
+  }
 }
 </script>
 
