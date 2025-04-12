@@ -9,6 +9,14 @@ $border-width: 2px;
   --success-color: #198754;
   --fail-color: #dc3545;
   --skip-color: #6c757d;
+
+  --btn-text-color: var(--body-color);
+  --btn-border-color: var(--body-color);
+  --btn-bg-color: var(--body-bg);
+
+  --btn-text-color--hover: var(--body-bg);
+  --btn-border-color--hover: var(--body-color);
+  --btn-bg-color--hover: var(--body-color);
 }
 
 @mixin dark-theme {
@@ -19,6 +27,14 @@ $border-width: 2px;
   --success-color: #63e6be;
   --fail-color: #ff6b6b;
   --skip-color: #c2c9d6;
+
+  --btn-text-color: var(--body-color);
+  --btn-border-color: var(--body-color);
+  --btn-bg-color: var(--body-bg);
+
+  --btn-text-color--hover: var(--body-bg);
+  --btn-border-color--hover: var(--body-color);
+  --btn-bg-color--hover: var(--body-color);
 }
 
 @media (prefers-color-scheme: light) {

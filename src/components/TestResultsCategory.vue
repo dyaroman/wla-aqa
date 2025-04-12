@@ -1,6 +1,4 @@
 <script setup>
-import { ref } from 'vue';
-
 import TestResultItem from '@/components/TestResultItem.vue';
 
 const { category, testResults } = defineProps({
@@ -14,9 +12,6 @@ const { category, testResults } = defineProps({
     required: true,
   },
 });
-
-const isAllItemsOpen = ref(false);
-const isAllScreenshotsOpen = ref(false);
 
 let title = '';
 switch (category) {
@@ -54,16 +49,7 @@ const initialOpen = category === 'fail' && testResults.length > 0;
     </summary>
     <ol>
       <li v-for="testResult in testResults" :key="testResult.uuid">
-        <TestResultItem
-          :category
-          :test-result
-          :isAllItemsOpen
-          :isAllScreenshotsOpen
-          @update:is-all-items-open="isAllItemsOpen = !isAllItemsOpen"
-          @update:is-all-screenshots-open="
-            isAllScreenshotsOpen = !isAllScreenshotsOpen
-          "
-        />
+        <TestResultItem :category :test-result />
       </li>
     </ol>
   </details>

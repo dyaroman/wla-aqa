@@ -1,0 +1,36 @@
+@use 'var';
+@use 'mixins';
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var.$gap;
+  padding: 12px 22px;
+  min-width: 220px;
+
+  font-size: inherit;
+  color: var(--btn-text-color);
+  text-decoration: none;
+
+  border: var.$border-width solid var(--btn-border-color);
+  background-color: var(--btn-bg-color);
+  transition:
+    color 0.15s,
+    background-color 0.15s,
+    border-color 0.15s;
+
+  @include mixins.hover() {
+    color: var(--btn-text-color--hover);
+
+    background-color: var(--btn-bg-color--hover);
+    border-color: var(--btn-border-color--hover);
+    cursor: pointer;
+  }
+
+  &--small {
+    padding: 8px 16px;
+
+    font-size: smaller;
+  }
+}

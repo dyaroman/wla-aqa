@@ -25,3 +25,11 @@
     @include focus-styles();
   }
 }
+
+@mixin hover() {
+  @media (hover: hover) {
+    &:hover {
+      @content;
+    }
+  }
+}

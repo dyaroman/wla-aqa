@@ -6,6 +6,8 @@ import { getBuildPath, reformatErrorMessage } from '@/misc/helpers.js';
 
 const buildNumber = inject('buildNumber');
 const latestBuildNumber = inject('latestBuildNumber');
+const allResultsOpen = inject('allResultsOpen');
+const allScreenshotsOpen = inject('allScreenshotsOpen');
 
 const { category, testResult } = defineProps({
   category: {
@@ -28,8 +30,6 @@ const { category, testResult } = defineProps({
   },
 });
 
-defineEmits(['update:isAllItemsOpen', 'update:isAllScreenshotsOpen']);
-
 const title = `${testResult['emoji']} ${testResult['title']}`;
 const errorMessage =
   category === 'fail' ? reformatErrorMessage(testResult['err']?.message) : null;
@@ -38,19 +38,15 @@ const src = `https://dyaroman.github.io/wla-e2e/data/${path}images/${testResult[
 </script>
 
 <template>
-  <details v-if="category === 'fail'" :open="isAllItemsOpen">
-    <summary @click.alt.prevent="$emit('update:isAllItemsOpen')">
-      {{ title }}
-    </summary>
+  <details v-if="category === 'fail'" :open="allResultsOpen">
+    <summary>{{ title }}</summary>
     <div class="error-message" v-if="testResult['fail']">
       <pre v-if="errorMessage.includes('{')">{{ errorMessage }}</pre>
       <template v-else>
         {{ errorMessage?.replaceAll('\\', '') }}
       </template>
-      <details :open="isAllScreenshotsOpen">
-        <summary @click.alt.prevent="$emit('update:isAllScreenshotsOpen')">
-          Screenshot
-        </summary>
+      <details :open="allScreenshotsOpen">
+        <summary>Screenshot</summary>
         <div class="screenshot">
           <ImageWithLoader :src alt="Failed to load screenshot" />
         </div>

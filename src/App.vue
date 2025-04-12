@@ -5,6 +5,7 @@ import Loader from '@/components/Loader.vue';
 import BuildSelector from '@/components/BuildSelector.vue';
 import BuildPipelineInfo from '@/components/BuildPipelineInfo.vue';
 import TestResultsDashboard from '@/components/TestResultsDashboard.vue';
+import TestDetailsToggler from '@/components/TestDetailsToggler.vue';
 import { getBuildPath, updateBuildNumberInUrl } from '@/misc/helpers.js';
 
 const appInit = ref(false);
@@ -13,6 +14,8 @@ const buildsInfo = ref([]); // previous + latest
 const buildNumber = ref('');
 const buildInfo = ref(null);
 const testResults = ref([]);
+const allResultsOpen = ref(false);
+const allScreenshotsOpen = ref(false);
 
 const latestBuildNumber = computed(() => buildsInfo.value[0]?.number || '');
 const buildNumberFromUrl = new URLSearchParams(window.location.search).get(
@@ -21,6 +24,8 @@ const buildNumberFromUrl = new URLSearchParams(window.location.search).get(
 
 provide('buildNumber', readonly(buildNumber));
 provide('latestBuildNumber', readonly(latestBuildNumber));
+provide('allResultsOpen', readonly(allResultsOpen));
+provide('allScreenshotsOpen', readonly(allScreenshotsOpen));
 
 async function loadBuildsInfo() {
   const [previousBuildsInfo, latestBuildInfo] = await Promise.all([
@@ -98,6 +103,10 @@ onMounted(async () => {
     <Loader v-if="!dataLoaded" />
     <template v-else>
       <BuildPipelineInfo :build-id="buildInfo.buildId" :build-number />
+      <TestDetailsToggler
+        @toggle:results="allResultsOpen = !allResultsOpen"
+        @toggle:screenshots="allScreenshotsOpen = !allScreenshotsOpen"
+      />
       <TestResultsDashboard :test-results />
     </template>
   </template>
