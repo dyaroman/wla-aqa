@@ -18,6 +18,9 @@ const allResultsOpen = ref(false);
 const allScreenshotsOpen = ref(false);
 
 const latestBuildNumber = computed(() => buildsInfo.value[0]?.number || '');
+const hasFailedTests = computed(
+  () => testResults.value.filter((test) => test.fail).length > 0,
+);
 const buildNumberFromUrl = new URLSearchParams(window.location.search).get(
   'build',
 );
@@ -59,6 +62,8 @@ async function loadBuildData() {
   ]);
   buildInfo.value = buildInfoJson;
   testResults.value = testResultsJson;
+  allResultsOpen.value = false;
+  allScreenshotsOpen.value = false;
   dataLoaded.value = true;
 }
 
@@ -104,6 +109,7 @@ onMounted(async () => {
     <template v-else>
       <BuildPipelineInfo :build-id="buildInfo.buildId" :build-number />
       <TestDetailsToggler
+        v-if="hasFailedTests"
         @toggle:results="(isOpen) => (allResultsOpen = isOpen)"
         @toggle:screenshots="(isOpen) => (allScreenshotsOpen = isOpen)"
       />
