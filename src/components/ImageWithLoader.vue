@@ -22,7 +22,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="container">
+  <div class="container" :style="{ minHeight: isLoading ? '140px' : null }">
     <Loader v-if="isLoading" />
 
     <img
@@ -43,7 +43,6 @@ onMounted(() => {
 .container {
   position: relative;
   width: 100%;
-  min-height: 300px;
 }
 
 .loader {
