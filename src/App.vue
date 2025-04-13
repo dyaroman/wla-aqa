@@ -10,6 +10,7 @@ import { getBuildPath, updateBuildNumberInUrl } from '@/misc/helpers.js';
 
 const appInit = ref(false);
 const dataLoaded = ref(false);
+const failedLoadData = ref(false);
 const buildsInfo = ref([]); // previous + latest
 const buildNumber = ref('');
 const buildInfo = ref(null);
@@ -32,41 +33,50 @@ provide('allResultsOpen', readonly(allResultsOpen));
 provide('allScreenshotsOpen', readonly(allScreenshotsOpen));
 
 async function loadBuildsInfo() {
-  const [previousBuildsInfo, latestBuildInfo] = await Promise.all([
-    fetch(`https://dyaroman.github.io/wla-e2e/data/builds.json`).then((res) =>
-      res.json(),
-    ),
-    fetch(`https://dyaroman.github.io/wla-e2e/data/build-info.json`)
-      .then((res) => res.json())
-      .then((json) => ({
-        number: json['buildNumber'],
-        timestamp: json['buildTimestamp'],
-      })),
-  ]);
-  buildsInfo.value = [...previousBuildsInfo, latestBuildInfo]
-    .map((build) => {
-      build['number'] = build['number'].toString();
-      return build;
-    })
-    .reverse();
+  try {
+    const [previousBuildsInfo, latestBuildInfo] = await Promise.all([
+      fetch(`https://dyaroman.github.io/wla-e2e/data/builds.json`).then((res) =>
+        res.json(),
+      ),
+      fetch(`https://dyaroman.github.io/wla-e2e/data/build-info.json`)
+        .then((res) => res.json())
+        .then((json) => ({
+          number: json['buildNumber'],
+          timestamp: json['buildTimestamp'],
+        })),
+    ]);
+    buildsInfo.value = [...previousBuildsInfo, latestBuildInfo]
+      .map((build) => {
+        build['number'] = build['number'].toString();
+        return build;
+      })
+      .reverse();
+  } catch (error) {
+    console.error('Failed to load builds info:', error.message);
+    failedLoadData.value = true;
+  }
 }
 
 async function loadBuildData() {
-  const path = getBuildPath(buildNumber.value, latestBuildNumber.value);
-  const [buildInfoJson, testResultsJson] = await Promise.all([
-    fetch(`https://dyaroman.github.io/wla-e2e/data/${path}build-info.json`).then(
-      (res) => res.json(),
-    ),
-    fetch(`https://dyaroman.github.io/wla-e2e/data/${path}results.json`).then(
-      (res) => res.json(),
-    ),
-  ]);
-  buildInfo.value = buildInfoJson;
-  testResults.value = testResultsJson;
-  allResultsOpen.value = false;
-  allScreenshotsOpen.value = false;
-  await loadConclusionImage();
-  dataLoaded.value = true;
+  try {
+    const path = getBuildPath(buildNumber.value, latestBuildNumber.value);
+    const [buildInfoJson, testResultsJson] = await Promise.all([
+      fetch(
+        `https://dyaroman.github.io/wla-e2e/data/${path}build-info.json`,
+      ).then((res) => res.json()),
+      fetch(`https://dyaroman.github.io/wla-e2e/data/${path}results.json`).then(
+        (res) => res.json(),
+      ),
+    ]);
+    buildInfo.value = buildInfoJson;
+    testResults.value = testResultsJson;
+    allResultsOpen.value = false;
+    allScreenshotsOpen.value = false;
+    dataLoaded.value = true;
+  } catch (error) {
+    console.error('Failed to load build data:', error.message);
+    failedLoadData.value = true;
+  }
 }
 
 async function loadConclusionImage() {
@@ -78,7 +88,7 @@ async function loadConclusionImage() {
     .then((res) => res.json())
     .then((json) => (conclusionImage.value = json.image))
     .catch((error) =>
-      console.log('Failed to load conclusion image:', error.message),
+      console.error('Failed to load conclusion image:', error.message),
     );
 }
 
@@ -86,6 +96,7 @@ async function updateSelectedBuildNumber(newValue) {
   buildNumber.value = newValue;
   dataLoaded.value = false;
   await loadBuildData();
+  await loadConclusionImage();
 }
 
 function initializeBuildNumber() {
@@ -103,15 +114,19 @@ onMounted(async () => {
     await loadBuildsInfo();
     initializeBuildNumber();
     await loadBuildData();
+    await loadConclusionImage();
     appInit.value = true;
   } catch (error) {
-    console.error('Error fetching data:', error.message);
+    console.error('Failed to initialize app:', error.message);
   }
 });
 </script>
 
 <template>
   <Loader v-if="!appInit" fixed />
+  <template v-else-if="failedLoadData">
+    <h3>Failed to load tests results data</h3>
+  </template>
   <template v-else>
     <h3><a href="/">AQA</a></h3>
     <BuildSelector
