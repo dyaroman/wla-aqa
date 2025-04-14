@@ -30,7 +30,6 @@ const { category, testResult } = defineProps({
   },
 });
 
-const title = `${testResult['emoji']} ${testResult['title']}`;
 const errorMessage =
   category === 'fail' ? reformatErrorMessage(testResult['err']?.message) : null;
 const path = getBuildPath(buildNumber['value'], latestBuildNumber['value']);
@@ -39,7 +38,7 @@ const src = `https://dyaroman.github.io/wla-e2e/data/${path}images/${testResult[
 
 <template>
   <details v-if="category === 'fail'" :open="allResultsOpen">
-    <summary>{{ title }}</summary>
+    <summary>{{ testResult['title'] }}</summary>
     <div class="error-message" v-if="testResult['fail']">
       <pre v-if="errorMessage.includes('{')">{{ errorMessage }}</pre>
       <template v-else>
@@ -53,5 +52,5 @@ const src = `https://dyaroman.github.io/wla-e2e/data/${path}images/${testResult[
       </details>
     </div>
   </details>
-  <template v-else>{{ title }}</template>
+  <template v-else>{{ testResult['title'] }}</template>
 </template>
