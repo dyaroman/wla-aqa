@@ -47,11 +47,11 @@ const initialOpen = category === 'fail' && testResults.length > 0;
     <summary>
       {{ title }}
     </summary>
-    <ol>
+    <ul>
       <li v-for="testResult in testResults" :key="testResult.uuid">
         <TestResultItem :category :test-result />
       </li>
-    </ol>
+    </ul>
   </details>
   <div
     v-else
@@ -64,3 +64,9 @@ const initialOpen = category === 'fail' && testResults.length > 0;
     {{ title }}
   </div>
 </template>
+
+<style scoped>
+.fail ul {
+  list-style: none;
+}
+</style>
