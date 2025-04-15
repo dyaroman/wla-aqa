@@ -18,7 +18,6 @@ const buildInfo = ref(null);
 const testResults = ref([]);
 const conclusionImage = ref(null);
 
-appStore.latestBuildNumber = computed(() => buildsInfo.value[0]?.number || '');
 const hasFailedTests = computed(
   () => testResults.value.filter((test) => test.fail).length > 0,
 );
@@ -106,6 +105,7 @@ watch(() => appStore.buildNumber, updateSelectedBuildNumber);
 onMounted(async () => {
   try {
     await loadBuildsInfo();
+    appStore.latestBuildNumber = buildsInfo.value[0]?.number || '';
     initializeBuildNumber();
     appInit.value = true;
   } catch (error) {
