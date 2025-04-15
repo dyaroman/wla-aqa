@@ -1,16 +1,15 @@
 <script setup>
 import { computed } from 'vue';
+import { storeToRefs } from 'pinia';
 
 import { reformatBuildNumber, timeAgo } from '@/misc/helpers.js';
+import { useAppStore } from '@/stores/appStore.js';
 
+const { buildNumber } = storeToRefs(useAppStore());
 const { builds } = defineProps({
   builds: {
     type: Array,
     required: true,
-  },
-  modelValue: {
-    type: String,
-    default: '',
   },
   disabled: {
     type: Boolean,
@@ -18,12 +17,7 @@ const { builds } = defineProps({
   },
 });
 
-const emit = defineEmits(['update:modelValue']);
 const groupedBuilds = computed(() => groupItemsByDate(builds));
-
-function updateValue(event) {
-  emit('update:modelValue', event.target.value);
-}
 
 function groupItemsByDate(arr) {
   const groups = {};
@@ -42,12 +36,7 @@ function groupItemsByDate(arr) {
 <template>
   <section>
     <h4>Select build:</h4>
-    <select
-      class="select"
-      :value="modelValue"
-      @change="updateValue"
-      :disabled="disabled"
-    >
+    <select class="select" v-model="buildNumber" :disabled="disabled">
       <option value="" disabled>Select build</option>
       <optgroup
         v-for="(group, date) in groupedBuilds"

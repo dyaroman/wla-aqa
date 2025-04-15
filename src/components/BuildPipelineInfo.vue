@@ -1,11 +1,12 @@
 <script setup>
+import { storeToRefs } from 'pinia';
+
+import { useAppStore } from '@/stores/appStore.js';
+
+const { buildNumber } = storeToRefs(useAppStore());
 const { buildId } = defineProps({
   buildId: {
     type: Number,
-    required: true,
-  },
-  buildNumber: {
-    type: String,
     required: true,
   },
 });

@@ -1,5 +1,6 @@
 <script setup>
-import { computed, onMounted, provide, readonly, ref, watchEffect } from 'vue';
+import { computed, onMounted, provide, readonly, ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 
 import Loader from '@/components/Loader.vue';
 import BuildSelector from '@/components/BuildSelector.vue';
@@ -9,12 +10,12 @@ import TestDetailsToggler from '@/components/TestDetailsToggler.vue';
 import { getBuildPath, updateBuildNumberInUrl } from '@/misc/helpers.js';
 import { useAppStore } from '@/stores/appStore';
 
-const appStore = useAppStore();
+const { allResultsOpen, allScreenshotsOpen, buildNumber } =
+  storeToRefs(useAppStore());
 const appInit = ref(false);
 const dataLoaded = ref(false);
 const failedLoadData = ref(false);
 const buildsInfo = ref([]); // previous + latest
-const buildNumber = ref('');
 const buildInfo = ref(null);
 const testResults = ref([]);
 const conclusionImage = ref(null);
@@ -27,7 +28,6 @@ const buildNumberFromUrl = new URLSearchParams(window.location.search).get(
   'build',
 );
 
-provide('buildNumber', readonly(buildNumber));
 provide('latestBuildNumber', readonly(latestBuildNumber));
 
 async function loadBuildsInfo() {
@@ -68,8 +68,8 @@ async function loadBuildData() {
     ]);
     buildInfo.value = buildInfoJson;
     testResults.value = testResultsJson;
-    appStore.allResultsOpen = false;
-    appStore.allScreenshotsOpen = false;
+    allResultsOpen.value = false;
+    allScreenshotsOpen.value = false;
     dataLoaded.value = true;
   } catch (error) {
     console.error('Failed to load build data:', error.message);
@@ -91,8 +91,8 @@ async function loadConclusionImage() {
 }
 
 async function updateSelectedBuildNumber(newValue) {
-  buildNumber.value = newValue;
   dataLoaded.value = false;
+  updateBuildNumberInUrl(newValue);
   await loadBuildData();
   await loadConclusionImage();
 }
@@ -105,14 +105,12 @@ function initializeBuildNumber() {
     latestBuildNumber.value;
 }
 
-watchEffect(() => updateBuildNumberInUrl(buildNumber.value));
+watch(buildNumber, updateSelectedBuildNumber);
 
 onMounted(async () => {
   try {
     await loadBuildsInfo();
     initializeBuildNumber();
-    await loadBuildData();
-    await loadConclusionImage();
     appInit.value = true;
   } catch (error) {
     console.error('Failed to initialize app:', error.message);
@@ -127,18 +125,13 @@ onMounted(async () => {
   </template>
   <template v-else>
     <h3><a href="/">AQA</a></h3>
-    <BuildSelector
-      :builds="buildsInfo"
-      :model-value="buildNumber"
-      :disabled="!dataLoaded"
-      @update:model-value="updateSelectedBuildNumber"
-    />
+    <BuildSelector :builds="buildsInfo" :disabled="!dataLoaded" />
     <Loader v-if="!dataLoaded" />
     <template v-else>
       <section v-if="conclusionImage" class="conclusion-image">
         <img :src="conclusionImage" alt="Conclusion Image" />
       </section>
-      <BuildPipelineInfo :build-id="buildInfo.buildId" :build-number />
+      <BuildPipelineInfo :build-id="buildInfo.buildId" />
       <TestDetailsToggler v-if="hasFailedTests" />
       <TestResultsDashboard :test-results />
     </template>
