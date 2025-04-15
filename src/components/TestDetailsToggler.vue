@@ -1,31 +1,31 @@
 <script setup>
 import { ref } from 'vue';
 
-const emit = defineEmits(['toggle:results', 'toggle:screenshots']);
+import { useAppStore } from '@/stores/appStore';
 
-const resultsOpen = ref(false);
+const appStore = useAppStore();
+
+const emit = defineEmits(['toggle:screenshots']);
+
 const screenshotsOpen = ref(false);
-
-function toggleResults(isOpen) {
-  resultsOpen.value = isOpen;
-  emit('toggle:results', isOpen);
-}
 
 function toggleScreenshots(isOpen) {
   screenshotsOpen.value = isOpen;
   emit('toggle:screenshots', isOpen);
 
   if (isOpen) {
-    resultsOpen.value = true;
-    emit('toggle:results', true);
+    appStore.allResultsOpen = true;
   }
 }
 </script>
 
 <template>
   <div class="btn-group">
-    <button class="btn btn--small" @click="toggleResults(!resultsOpen)">
-      {{ resultsOpen ? 'Collapse' : 'Expand' }} All Results
+    <button
+      class="btn btn--small"
+      @click="appStore.allResultsOpen = !appStore.allResultsOpen"
+    >
+      {{ appStore.allResultsOpen ? 'Collapse' : 'Expand' }} All Results
     </button>
     <button class="btn btn--small" @click="toggleScreenshots(!screenshotsOpen)">
       {{ screenshotsOpen ? 'Collapse' : 'Expand' }} All Screenshots

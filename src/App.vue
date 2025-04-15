@@ -7,7 +7,9 @@ import BuildPipelineInfo from '@/components/BuildPipelineInfo.vue';
 import TestResultsDashboard from '@/components/TestResultsDashboard.vue';
 import TestDetailsToggler from '@/components/TestDetailsToggler.vue';
 import { getBuildPath, updateBuildNumberInUrl } from '@/misc/helpers.js';
+import { useAppStore } from '@/stores/appStore';
 
+const appStore = useAppStore();
 const appInit = ref(false);
 const dataLoaded = ref(false);
 const failedLoadData = ref(false);
@@ -15,7 +17,6 @@ const buildsInfo = ref([]); // previous + latest
 const buildNumber = ref('');
 const buildInfo = ref(null);
 const testResults = ref([]);
-const allResultsOpen = ref(false);
 const allScreenshotsOpen = ref(false);
 const conclusionImage = ref(null);
 
@@ -29,7 +30,6 @@ const buildNumberFromUrl = new URLSearchParams(window.location.search).get(
 
 provide('buildNumber', readonly(buildNumber));
 provide('latestBuildNumber', readonly(latestBuildNumber));
-provide('allResultsOpen', readonly(allResultsOpen));
 provide('allScreenshotsOpen', readonly(allScreenshotsOpen));
 
 async function loadBuildsInfo() {
@@ -70,7 +70,7 @@ async function loadBuildData() {
     ]);
     buildInfo.value = buildInfoJson;
     testResults.value = testResultsJson;
-    allResultsOpen.value = false;
+    appStore.allResultsOpen = false;
     allScreenshotsOpen.value = false;
     dataLoaded.value = true;
   } catch (error) {
@@ -143,7 +143,6 @@ onMounted(async () => {
       <BuildPipelineInfo :build-id="buildInfo.buildId" :build-number />
       <TestDetailsToggler
         v-if="hasFailedTests"
-        @toggle:results="(isOpen) => (allResultsOpen = isOpen)"
         @toggle:screenshots="(isOpen) => (allScreenshotsOpen = isOpen)"
       />
       <TestResultsDashboard :test-results />

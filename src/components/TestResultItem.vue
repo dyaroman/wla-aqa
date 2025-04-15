@@ -3,10 +3,12 @@ import { inject } from 'vue';
 
 import ImageWithLoader from '@/components/ImageWithLoader.vue';
 import { getBuildPath, reformatErrorMessage } from '@/misc/helpers.js';
+import { useAppStore } from '@/stores/appStore';
+
+const appStore = useAppStore();
 
 const buildNumber = inject('buildNumber');
 const latestBuildNumber = inject('latestBuildNumber');
-const allResultsOpen = inject('allResultsOpen');
 const allScreenshotsOpen = inject('allScreenshotsOpen');
 
 const { category, testResult } = defineProps({
@@ -37,7 +39,7 @@ const src = `https://dyaroman.github.io/wla-e2e/data/${path}images/${testResult[
 </script>
 
 <template>
-  <details v-if="category === 'fail'" :open="allResultsOpen">
+  <details v-if="category === 'fail'" :open="appStore.allResultsOpen">
     <summary>{{ testResult['title'] }}</summary>
     <div class="error-message" v-if="testResult['fail']">
       <pre v-if="errorMessage.includes('{')">{{ errorMessage }}</pre>
