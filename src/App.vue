@@ -5,7 +5,7 @@ import Loader from '@/components/Loader.vue';
 import BuildSelector from '@/components/BuildSelector.vue';
 import BuildPipelineInfo from '@/components/BuildPipelineInfo.vue';
 import TestResultsDashboard from '@/components/TestResultsDashboard.vue';
-import TestDetailsToggler from '@/components/TestDetailsToggler.vue';
+import TestDetailsToggle from '@/components/TestDetailsToggle.vue';
 import { getBuildPath, updateBuildNumberInUrl } from '@/misc/helpers.js';
 import { useAppStore } from '@/stores/appStore';
 
@@ -129,7 +129,7 @@ onMounted(async () => {
         <img :src="conclusionImage" alt="Conclusion Image" />
       </section>
       <BuildPipelineInfo :build-id="buildInfo.buildId" />
-      <TestDetailsToggler v-if="hasFailedTests" />
+      <TestDetailsToggle v-if="hasFailedTests" />
       <TestResultsDashboard :test-results />
     </template>
   </template>
