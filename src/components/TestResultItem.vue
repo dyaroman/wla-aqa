@@ -9,7 +9,6 @@ const appStore = useAppStore();
 
 const buildNumber = inject('buildNumber');
 const latestBuildNumber = inject('latestBuildNumber');
-const allScreenshotsOpen = inject('allScreenshotsOpen');
 
 const { category, testResult } = defineProps({
   category: {
@@ -46,7 +45,7 @@ const src = `https://dyaroman.github.io/wla-e2e/data/${path}images/${testResult[
       <template v-else>
         {{ errorMessage?.replaceAll('\\', '') }}
       </template>
-      <details :open="allScreenshotsOpen">
+      <details :open="appStore.allScreenshotsOpen">
         <summary>Screenshot</summary>
         <div class="screenshot">
           <ImageWithLoader :src alt="Failed to load screenshot" />

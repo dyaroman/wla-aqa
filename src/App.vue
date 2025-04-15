@@ -17,7 +17,6 @@ const buildsInfo = ref([]); // previous + latest
 const buildNumber = ref('');
 const buildInfo = ref(null);
 const testResults = ref([]);
-const allScreenshotsOpen = ref(false);
 const conclusionImage = ref(null);
 
 const latestBuildNumber = computed(() => buildsInfo.value[0]?.number || '');
@@ -30,7 +29,6 @@ const buildNumberFromUrl = new URLSearchParams(window.location.search).get(
 
 provide('buildNumber', readonly(buildNumber));
 provide('latestBuildNumber', readonly(latestBuildNumber));
-provide('allScreenshotsOpen', readonly(allScreenshotsOpen));
 
 async function loadBuildsInfo() {
   try {
@@ -71,7 +69,7 @@ async function loadBuildData() {
     buildInfo.value = buildInfoJson;
     testResults.value = testResultsJson;
     appStore.allResultsOpen = false;
-    allScreenshotsOpen.value = false;
+    appStore.allScreenshotsOpen = false;
     dataLoaded.value = true;
   } catch (error) {
     console.error('Failed to load build data:', error.message);
@@ -141,10 +139,7 @@ onMounted(async () => {
         <img :src="conclusionImage" alt="Conclusion Image" />
       </section>
       <BuildPipelineInfo :build-id="buildInfo.buildId" :build-number />
-      <TestDetailsToggler
-        v-if="hasFailedTests"
-        @toggle:screenshots="(isOpen) => (allScreenshotsOpen = isOpen)"
-      />
+      <TestDetailsToggler v-if="hasFailedTests" />
       <TestResultsDashboard :test-results />
     </template>
   </template>
