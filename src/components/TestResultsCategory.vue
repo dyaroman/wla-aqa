@@ -67,6 +67,8 @@ const initialOpen = category === 'fail' && testResults.length > 0;
 
 <style scoped>
 .fail ul {
+  padding-left: 20px;
+
   list-style: none;
 }
 </style>

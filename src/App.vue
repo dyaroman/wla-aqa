@@ -85,13 +85,6 @@ async function loadConclusionImage() {
     );
 }
 
-async function updateSelectedBuildNumber(newValue) {
-  dataLoaded.value = false;
-  updateBuildNumberInUrl(newValue);
-  await loadBuildData();
-  await loadConclusionImage();
-}
-
 function initializeBuildNumber() {
   appStore.buildNumber =
     (buildNumberFromUrl &&
@@ -100,7 +93,15 @@ function initializeBuildNumber() {
     appStore.latestBuildNumber;
 }
 
-watch(() => appStore.buildNumber, updateSelectedBuildNumber);
+watch(
+  () => appStore.buildNumber,
+  async (newValue) => {
+    dataLoaded.value = false;
+    updateBuildNumberInUrl(newValue);
+    await loadBuildData();
+    await loadConclusionImage();
+  },
+);
 
 onMounted(async () => {
   try {
