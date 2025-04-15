@@ -1,9 +1,7 @@
 <script setup>
-import { storeToRefs } from 'pinia';
-
 import { useAppStore } from '@/stores/appStore.js';
 
-const { buildNumber } = storeToRefs(useAppStore());
+const appStore = useAppStore();
 const { buildId } = defineProps({
   buildId: {
     type: Number,
@@ -19,7 +17,7 @@ const buildLink = `https://github.com/dyaroman/wla-e2e/_build/results?buildId=${
     <h4>
       Build:
       <a :href="buildLink" target="_blank" rel="noopener noreferrer"
-        >#{{ buildNumber }}</a
+        >#{{ appStore.buildNumber }}</a
       >
     </h4>
   </section>

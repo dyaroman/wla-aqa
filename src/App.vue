@@ -1,6 +1,5 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue';
-import { storeToRefs } from 'pinia';
 
 import Loader from '@/components/Loader.vue';
 import BuildSelector from '@/components/BuildSelector.vue';
@@ -10,8 +9,7 @@ import TestDetailsToggler from '@/components/TestDetailsToggler.vue';
 import { getBuildPath, updateBuildNumberInUrl } from '@/misc/helpers.js';
 import { useAppStore } from '@/stores/appStore';
 
-const { allResultsOpen, allScreenshotsOpen, buildNumber, latestBuildNumber } =
-  storeToRefs(useAppStore());
+const appStore = useAppStore();
 const appInit = ref(false);
 const dataLoaded = ref(false);
 const failedLoadData = ref(false);
@@ -20,7 +18,7 @@ const buildInfo = ref(null);
 const testResults = ref([]);
 const conclusionImage = ref(null);
 
-latestBuildNumber.value = computed(() => buildsInfo.value[0]?.number || '');
+appStore.latestBuildNumber = computed(() => buildsInfo.value[0]?.number || '');
 const hasFailedTests = computed(
   () => testResults.value.filter((test) => test.fail).length > 0,
 );
@@ -55,7 +53,7 @@ async function loadBuildsInfo() {
 
 async function loadBuildData() {
   try {
-    const path = getBuildPath(buildNumber.value, latestBuildNumber.value);
+    const path = getBuildPath(appStore.buildNumber, appStore.latestBuildNumber);
     const [buildInfoJson, testResultsJson] = await Promise.all([
       fetch(
         `https://dyaroman.github.io/wla-e2e/data/${path}build-info.json`,
@@ -66,8 +64,8 @@ async function loadBuildData() {
     ]);
     buildInfo.value = buildInfoJson;
     testResults.value = testResultsJson;
-    allResultsOpen.value = false;
-    allScreenshotsOpen.value = false;
+    appStore.allResultsOpen = false;
+    appStore.allScreenshotsOpen = false;
     dataLoaded.value = true;
   } catch (error) {
     console.error('Failed to load build data:', error.message);
@@ -96,14 +94,14 @@ async function updateSelectedBuildNumber(newValue) {
 }
 
 function initializeBuildNumber() {
-  buildNumber.value =
+  appStore.buildNumber =
     (buildNumberFromUrl &&
       buildsInfo.value.find((build) => build['number'] === buildNumberFromUrl)
         ?.number) ||
-    latestBuildNumber.value;
+    appStore.latestBuildNumber;
 }
 
-watch(buildNumber, updateSelectedBuildNumber);
+watch(() => appStore.buildNumber, updateSelectedBuildNumber);
 
 onMounted(async () => {
   try {

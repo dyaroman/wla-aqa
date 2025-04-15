@@ -1,12 +1,9 @@
 <script setup>
-import { storeToRefs } from 'pinia';
-
 import ImageWithLoader from '@/components/ImageWithLoader.vue';
 import { getBuildPath, reformatErrorMessage } from '@/misc/helpers.js';
 import { useAppStore } from '@/stores/appStore';
 
-const { allResultsOpen, allScreenshotsOpen, buildNumber, latestBuildNumber } =
-  storeToRefs(useAppStore());
+const appStore = useAppStore();
 
 const { category, testResult } = defineProps({
   category: {
@@ -21,19 +18,19 @@ const { category, testResult } = defineProps({
 
 const errorMessage =
   category === 'fail' ? reformatErrorMessage(testResult['err']?.message) : null;
-const path = getBuildPath(buildNumber['value'], latestBuildNumber['value']);
+const path = getBuildPath(appStore.buildNumber, appStore.latestBuildNumber);
 const src = `https://dyaroman.github.io/wla-e2e/data/${path}images/${testResult['img']}`;
 </script>
 
 <template>
-  <details v-if="category === 'fail'" :open="allResultsOpen">
+  <details v-if="category === 'fail'" :open="appStore.allResultsOpen">
     <summary>{{ testResult['title'] }}</summary>
     <div class="error-message" v-if="testResult['fail']">
       <pre v-if="errorMessage.includes('{')">{{ errorMessage }}</pre>
       <template v-else>
         {{ errorMessage?.replaceAll('\\', '') }}
       </template>
-      <details :open="allScreenshotsOpen">
+      <details :open="appStore.allScreenshotsOpen">
         <summary>Screenshot</summary>
         <div class="screenshot">
           <ImageWithLoader :src alt="Failed to load screenshot" />
