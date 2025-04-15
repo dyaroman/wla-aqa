@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, provide, readonly, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 
 import Loader from '@/components/Loader.vue';
@@ -10,7 +10,7 @@ import TestDetailsToggler from '@/components/TestDetailsToggler.vue';
 import { getBuildPath, updateBuildNumberInUrl } from '@/misc/helpers.js';
 import { useAppStore } from '@/stores/appStore';
 
-const { allResultsOpen, allScreenshotsOpen, buildNumber } =
+const { allResultsOpen, allScreenshotsOpen, buildNumber, latestBuildNumber } =
   storeToRefs(useAppStore());
 const appInit = ref(false);
 const dataLoaded = ref(false);
@@ -20,15 +20,13 @@ const buildInfo = ref(null);
 const testResults = ref([]);
 const conclusionImage = ref(null);
 
-const latestBuildNumber = computed(() => buildsInfo.value[0]?.number || '');
+latestBuildNumber.value = computed(() => buildsInfo.value[0]?.number || '');
 const hasFailedTests = computed(
   () => testResults.value.filter((test) => test.fail).length > 0,
 );
 const buildNumberFromUrl = new URLSearchParams(window.location.search).get(
   'build',
 );
-
-provide('latestBuildNumber', readonly(latestBuildNumber));
 
 async function loadBuildsInfo() {
   try {

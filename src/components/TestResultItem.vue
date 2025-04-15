@@ -1,15 +1,12 @@
 <script setup>
-import { inject } from 'vue';
 import { storeToRefs } from 'pinia';
 
 import ImageWithLoader from '@/components/ImageWithLoader.vue';
 import { getBuildPath, reformatErrorMessage } from '@/misc/helpers.js';
 import { useAppStore } from '@/stores/appStore';
 
-const { allResultsOpen, allScreenshotsOpen, buildNumber } =
+const { allResultsOpen, allScreenshotsOpen, buildNumber, latestBuildNumber } =
   storeToRefs(useAppStore());
-
-const latestBuildNumber = inject('latestBuildNumber');
 
 const { category, testResult } = defineProps({
   category: {
