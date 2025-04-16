@@ -2,6 +2,7 @@
 import { computed, onMounted, ref, watch } from 'vue';
 
 import Loader from '@/components/Loader.vue';
+import PipelineRunner from '@/components/PipelineRunner.vue';
 import BuildSelector from '@/components/BuildSelector.vue';
 import BuildPipelineInfo from '@/components/BuildPipelineInfo.vue';
 import TestResultsDashboard from '@/components/TestResultsDashboard.vue';
@@ -105,9 +106,9 @@ watch(
 
 onMounted(async () => {
   try {
-    await loadBuildsInfo();
-    appStore.latestBuildNumber = buildsInfo.value[0]?.number || '';
-    initializeBuildNumber();
+    // await loadBuildsInfo();
+    // appStore.latestBuildNumber = buildsInfo.value[0]?.number || '';
+    // initializeBuildNumber();
     appInit.value = true;
   } catch (error) {
     console.error('Failed to initialize app:', error.message);
