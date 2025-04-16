@@ -1,10 +1,12 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 
+import Radio from '@/components/Radio.vue';
+
 const branches = ref(null);
 const branch = ref('');
-const mode = ref('');
-const env = ref('');
+const mode = ref('parallel');
+const env = ref('dev');
 const url = ref('');
 const tag = ref('');
 
@@ -46,23 +48,8 @@ onMounted(() => {
   <fieldset>
     <legend>Select mode:</legend>
     <div class="radio-group">
-      <label class="radio">
-        <input
-          type="radio"
-          class="radio__input"
-          v-model="mode"
-          value="parallel"
-          checked
-        />
-        <span class="radio__custom"></span>
-        <span class="radio__label">Parallel</span>
-      </label>
-
-      <label class="radio">
-        <input type="radio" class="radio__input" v-model="mode" value="steps" />
-        <span class="radio__custom"></span>
-        <span class="radio__label">Steps</span>
-      </label>
+      <Radio v-model="mode" value="parallel">Parallel</Radio>
+      <Radio v-model="mode" value="steps">Steps</Radio>
     </div>
   </fieldset>
 
@@ -70,34 +57,9 @@ onMounted(() => {
     <legend>Select env:</legend>
 
     <div class="radio-group">
-      <label class="radio">
-        <input
-          type="radio"
-          class="radio__input"
-          v-model="env"
-          value="feature"
-        />
-        <span class="radio__custom"></span>
-        <span class="radio__label">Feature</span>
-      </label>
-
-      <label class="radio">
-        <input
-          type="radio"
-          class="radio__input"
-          v-model="env"
-          value="dev"
-          checked
-        />
-        <span class="radio__custom"></span>
-        <span class="radio__label">Dev</span>
-      </label>
-
-      <label class="radio">
-        <input type="radio" class="radio__input" v-model="env" value="prod" />
-        <span class="radio__custom"></span>
-        <span class="radio__label">Prod</span>
-      </label>
+      <Radio v-model="env" value="feature">Feature</Radio>
+      <Radio v-model="env" value="dev">Dev</Radio>
+      <Radio v-model="env" value="prod">Prod</Radio>
     </div>
   </fieldset>
 
