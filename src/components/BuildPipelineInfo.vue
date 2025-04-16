@@ -21,23 +21,23 @@ const formsLink = buildInfo?.['formsUrl'];
 
 <template>
   <section>
-    <h4>
+    <h2>
       Build:
       <a :href="buildLink" target="_blank" rel="noopener noreferrer"
         >#{{ appStore.buildNumber }}</a
       >
-    </h4>
-    <h4 v-if="buildInfo['pipelineBranch']">
+    </h2>
+    <h2 v-if="buildInfo['pipelineBranch']">
       Pipeline branch:
       <a :href="gitLink" target="_blank" rel="noopener noreferrer">{{
         pipelineBranch
       }}</a>
-    </h4>
-    <h4 v-if="formsLink">
+    </h2>
+    <h2 v-if="formsLink">
       Forms feature branch:
       <a :href="formsLink" target="_blank" rel="noopener noreferrer">{{
         formsLink.replace(/https?:\/\//, '')
       }}</a>
-    </h4>
+    </h2>
   </section>
 </template>

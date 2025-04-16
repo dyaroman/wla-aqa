@@ -118,10 +118,10 @@ onMounted(async () => {
 <template>
   <Loader v-if="!appInit" fixed />
   <template v-else-if="failedLoadData">
-    <h3>Failed to load tests results data</h3>
+    <h2>Failed to load tests results data</h2>
   </template>
   <template v-else>
-    <h3><a href="/">AQA</a></h3>
+    <h1><a href="/">AQA</a></h1>
     <BuildSelector :builds="buildsInfo" :disabled="!dataLoaded" />
     <Loader v-if="!dataLoaded" />
     <template v-else>

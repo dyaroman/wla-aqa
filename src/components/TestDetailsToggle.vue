@@ -15,13 +15,13 @@ function toggleScreenshots(isOpen) {
 <template>
   <div class="btn-group">
     <button
-      class="btn btn--small"
+      class="btn"
       @click="appStore.allResultsOpen = !appStore.allResultsOpen"
     >
       {{ appStore.allResultsOpen ? 'Collapse' : 'Expand' }} All Results
     </button>
     <button
-      class="btn btn--small"
+      class="btn"
       @click="toggleScreenshots(!appStore.allScreenshotsOpen)"
     >
       {{ appStore.allScreenshotsOpen ? 'Collapse' : 'Expand' }} All Screenshots

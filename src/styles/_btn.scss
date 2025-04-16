@@ -6,11 +6,13 @@
   align-items: center;
   justify-content: center;
   gap: var.$gap;
-  padding: 12px 22px;
+  padding: 10px 20px;
+  min-height: 40px;
 
-  font-size: inherit;
+  font-size: 0.875rem;
   color: var(--btn-text-color);
   text-decoration: none;
+  line-height: 1;
 
   border: var.$border-width solid var(--btn-border-color);
   background-color: var(--btn-bg-color);
@@ -25,11 +27,5 @@
     background-color: var(--btn-bg-color--hover);
     border-color: var(--btn-border-color--hover);
     cursor: pointer;
-  }
-
-  &--small {
-    padding: 8px 16px;
-
-    font-size: smaller;
   }
 }

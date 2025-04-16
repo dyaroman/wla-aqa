@@ -35,7 +35,7 @@ function groupItemsByDate(arr) {
 
 <template>
   <section>
-    <h4>Select build:</h4>
+    <h2>Select build:</h2>
     <select class="select" v-model="buildNumber" :disabled="disabled">
       <option value="" disabled>Select build</option>
       <optgroup
