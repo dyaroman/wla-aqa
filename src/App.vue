@@ -125,11 +125,11 @@ onMounted(async () => {
     <BuildSelector :builds="buildsInfo" :disabled="!dataLoaded" />
     <Loader v-if="!dataLoaded" />
     <template v-else>
+      <BuildPipelineInfo :build-info />
+      <TestDetailsToggle v-if="hasFailedTests" />
       <section v-if="conclusionImage" class="conclusion-image">
         <img :src="conclusionImage" alt="Conclusion Image" />
       </section>
-      <BuildPipelineInfo :build-id="buildInfo.buildId" />
-      <TestDetailsToggle v-if="hasFailedTests" />
       <TestResultsDashboard :test-results />
     </template>
   </template>
