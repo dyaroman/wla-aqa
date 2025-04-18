@@ -63,3 +63,15 @@ export function getBuildPath(buildNumber, latestBuildNumber) {
   }
   return buildNumber ? `${buildNumber}/` : '';
 }
+
+export function normalizeUrl(url) {
+  // add protocol if it wasn't passed
+  if (/^https?:\/\//.test(url) === false) {
+    url = `https://${url}`;
+  }
+  // remove trailing slash if it was passed
+  if (/\/$/.test(url)) {
+    url = url.slice(0, -1);
+  }
+  return url;
+}

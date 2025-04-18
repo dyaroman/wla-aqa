@@ -73,6 +73,15 @@ pre {
   padding: 2 * var.$gap 0;
 
   font-size: 14px;
+  color: var(--fail-color);
+}
+
+.validation-error {
+  display: block;
+  margin-block: var.$gap;
+
+  font-size: 0.75rem;
+  color: var(--fail-color);
 }
 
 .screenshot {
