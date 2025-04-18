@@ -1,9 +1,12 @@
+@use 'sass:math';
 @use 'var';
+@use 'mixins';
 
 .input,
 .select {
   width: 100%;
   height: 40px;
+  padding-inline: var.$gap;
 
   font-size: inherit;
   color: inherit;
@@ -36,29 +39,56 @@ fieldset {
   display: flex;
   align-items: center;
   cursor: pointer;
-  gap: var.$gap / 2;
+  gap: math.div(var.$gap, 2);
 }
 
 .radio__input {
-  display: none;
+  @include mixins.visually-hidden();
+
+  &:checked ~ .radio__custom::before {
+    opacity: 1;
+  }
+
+  &:focus ~ .radio__custom {
+    @include mixins.focus-styles();
+  }
+
+  &:focus:not(:focus-visible) ~ .radio__custom {
+    @include mixins.focus-styles($revert: true);
+  }
+
+  &:focus-visible ~ .radio__custom {
+    @include mixins.focus-styles();
+  }
 }
 
 .radio__custom {
-  width: 16px;
-  height: 16px;
-  border: var.$border-width solid var(--body-color);
-  border-radius: 50%;
   position: relative;
-  flex-shrink: 0;
-}
 
-.radio__input:checked + .radio__custom::after {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 8px;
-  height: 8px;
-  background-color: var(--body-color);
+  display: block;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+
   border-radius: 50%;
+  border: var.$border-width solid var(--body-color);
+  background-color: var(--body-bg);
+
+  &::before {
+    content: '';
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    display: block;
+    width: 50%;
+    height: 50%;
+
+    opacity: 0;
+    border-radius: 50%;
+    background-color: var(--body-color);
+    transition: opacity 0.15s;
+    transform: translate(-50%, -50%);
+  }
 }

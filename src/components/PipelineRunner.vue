@@ -48,8 +48,8 @@ onMounted(() => {
   <fieldset>
     <legend>Select mode:</legend>
     <div class="radio-group">
-      <Radio v-model="mode" value="parallel">Parallel</Radio>
-      <Radio v-model="mode" value="steps">Steps</Radio>
+      <Radio name="mode" v-model="mode" value="parallel">parallel</Radio>
+      <Radio name="mode" v-model="mode" value="steps">steps</Radio>
     </div>
   </fieldset>
 
@@ -57,9 +57,9 @@ onMounted(() => {
     <legend>Select env:</legend>
 
     <div class="radio-group">
-      <Radio v-model="env" value="feature">Feature</Radio>
-      <Radio v-model="env" value="dev">Dev</Radio>
-      <Radio v-model="env" value="prod">Prod</Radio>
+      <Radio name="env" v-model="env" value="feature">feature</Radio>
+      <Radio name="env" v-model="env" value="dev">dev</Radio>
+      <Radio name="env" v-model="env" value="prod">prod</Radio>
     </div>
   </fieldset>
 

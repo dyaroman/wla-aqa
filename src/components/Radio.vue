@@ -1,7 +1,17 @@
 <script setup>
 defineProps({
-  modelValue: [String, Number, Boolean],
-  value: [String, Number, Boolean],
+  name: {
+    type: String,
+    required: true,
+  },
+  modelValue: {
+    type: [String, Number, Boolean],
+    required: true,
+  },
+  value: {
+    type: [String, Number, Boolean],
+    required: true,
+  },
 });
 
 defineEmits(['update:modelValue']);
@@ -12,6 +22,7 @@ defineEmits(['update:modelValue']);
     <input
       type="radio"
       class="radio__input"
+      :name
       :value
       :checked="modelValue === value"
       @change="$emit('update:modelValue', value)"
