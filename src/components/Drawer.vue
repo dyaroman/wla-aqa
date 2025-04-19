@@ -33,6 +33,31 @@ const emit = defineEmits(['update:modelValue']);
 
 const drawerRef = ref(null);
 const previouslyFocusedElement = ref(null);
+const scrollPosition = ref(0);
+
+// Function to prevent body scrolling
+const preventBodyScroll = () => {
+  // Store current scroll position
+  scrollPosition.value = window.pageYOffset;
+
+  // Add styles to body to prevent scrolling
+  document.body.style.overflow = 'hidden';
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${scrollPosition.value}px`;
+  document.body.style.width = '100%';
+};
+
+// Function to restore body scrolling
+const restoreBodyScroll = () => {
+  // Remove the styles preventing scroll
+  document.body.style.overflow = '';
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.width = '';
+
+  // Restore scroll position
+  window.scrollTo(0, scrollPosition.value);
+};
 
 // Function to handle Tab key and trap focus
 const handleTabKey = (event) => {
@@ -76,6 +101,9 @@ watch(
       // Store the currently focused element to restore focus later
       previouslyFocusedElement.value = document.activeElement;
 
+      // Prevent body scroll
+      preventBodyScroll();
+
       // Focus the drawer after it's fully rendered
       nextTick(() => {
         drawerRef.value?.focus();
@@ -84,6 +112,9 @@ watch(
       // Add keyboard event listener for focus trapping
       document.addEventListener('keydown', handleKeyDown);
     } else {
+      // Restore body scroll
+      restoreBodyScroll();
+
       // Remove keyboard event listener when drawer closes
       document.removeEventListener('keydown', handleKeyDown);
 
@@ -97,7 +128,12 @@ watch(
   },
 );
 
+// Make sure to clean up on component unmount
 onBeforeUnmount(() => {
+  // Restore scrolling if component is unmounted while drawer is open
+  if (props.modelValue) {
+    restoreBodyScroll();
+  }
   document.removeEventListener('keydown', handleKeyDown);
 });
 </script>
