@@ -1,0 +1,9 @@
+@use 'var';
+
+.header {
+  position: sticky;
+  top: 0;
+
+  background-color: var(--body-bg);
+  border-bottom: var.$border-width solid var(--border-color);
+}

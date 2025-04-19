@@ -124,12 +124,14 @@ onMounted(async () => {
     <h2>Failed to load tests results data</h2>
   </template>
   <template v-else>
-    <div class="flex">
-      <h1><a href="/">AQA</a></h1>
-      <button class="btn" @click="showPipelineDrawer = true">
-        Run pipeline
-      </button>
-    </div>
+    <header class="header">
+      <div class="flex">
+        <h1><a href="/">AQA</a></h1>
+        <button class="btn" @click="showPipelineDrawer = true">
+          Run pipeline
+        </button>
+      </div>
+    </header>
     <BuildSelector :builds="buildsInfo" :disabled="!dataLoaded" />
     <Loader v-if="!dataLoaded" />
     <template v-else>
