@@ -137,7 +137,9 @@ onMounted(async () => {
       <TestDetailsToggle v-if="hasFailedTests" />
       <figure v-if="conclusionImage" class="conclusion-image">
         <img :src="conclusionImage" alt="Conclusion Image" />
-        <figcaption>{{ hasFailedTests ? '-100' : '+1000' }} Aura</figcaption>
+        <figcaption :class="hasFailedTests ? 'fail' : 'pass'">
+          {{ hasFailedTests ? '-100' : '+1000' }} Aura
+        </figcaption>
       </figure>
       <TestResultsDashboard :test-results />
     </template>
