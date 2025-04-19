@@ -1,4 +1,5 @@
 @use 'var';
+@use 'mixins';
 
 .drawer-backdrop {
   position: fixed;
@@ -21,6 +22,8 @@
 
   background-color: var(--body-bg);
   box-shadow: var(--drawer-shadow);
+
+  @include mixins.focus;
 }
 
 .drawer-left {
