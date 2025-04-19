@@ -24,8 +24,8 @@ body {
 #app {
   max-width: 990px;
   margin: 0 auto;
-  padding-right: 15px;
-  padding-left: 15px;
+  padding-right: 2 * var.$gap;
+  padding-left: 2 * var.$gap;
 }
 
 h1 {
@@ -70,7 +70,7 @@ pre {
   display: flex;
   flex-direction: column;
   gap: var.$gap;
-  padding: 1rem 0;
+  padding: 2 * var.$gap 0;
 
   font-size: 14px;
 }
@@ -91,14 +91,14 @@ pre {
 }
 
 .list {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+  margin-top: 2 * var.$gap;
+  margin-bottom: 2 * var.$gap;
 }
 
 ol {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var.$gap;
 }
 
 .conclusion-image {
