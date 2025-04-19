@@ -2,10 +2,8 @@
 import { onMounted, reactive, ref } from 'vue';
 
 import Radio from '@/components/Radio.vue';
-import Drawer from '@/components/Drawer.vue';
 import { normalizeUrl } from '@/misc/helpers.js';
 
-const showDrawer = ref(false);
 const branches = ref(null);
 const formsBranches = ref(null);
 const branch = ref('');
@@ -209,28 +207,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
-    <button @click="showDrawer = true">Open Drawer</button>
-
-    <Drawer v-model="showDrawer" title="Run new pipeline">
-      <p>This is the content of the drawer.</p>
-      <button @click="showDrawer = false">Close</button>
-    </Drawer>
-  </div>
-
-  <h2>Run new pipeline:</h2>
-
-  <pre>{{ JSON.stringify({ branch, mode, env, url, tag }, null, 2) }}</pre>
-
   <form @submit.prevent="triggerPipeline">
     <fieldset>
       <legend>Branch:</legend>
-      <!--    <select class="select" v-model="branch">-->
-      <!--      <option value="" disabled selected>Select branch</option>-->
-      <!--      <option v-for="branch in branches" :key="branch" :value="branch">-->
-      <!--        {{ branch }}-->
-      <!--      </option>-->
-      <!--    </select>-->
       <input
         type="text"
         class="input"

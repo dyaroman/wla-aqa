@@ -3,6 +3,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 
 import Loader from '@/components/Loader.vue';
 import PipelineRunner from '@/components/PipelineRunner.vue';
+import Drawer from '@/components/Drawer.vue';
 import BuildSelector from '@/components/BuildSelector.vue';
 import BuildPipelineInfo from '@/components/BuildPipelineInfo.vue';
 import TestResultsDashboard from '@/components/TestResultsDashboard.vue';
@@ -18,6 +19,7 @@ const buildsInfo = ref([]); // previous + latest
 const buildInfo = ref(null);
 const testResults = ref([]);
 const conclusionImage = ref(null);
+const showPipelineDrawer = ref(false);
 
 const hasFailedTests = computed(
   () => testResults.value.filter((test) => test.fail).length > 0,
@@ -122,17 +124,26 @@ onMounted(async () => {
     <h2>Failed to load tests results data</h2>
   </template>
   <template v-else>
-    <h1><a href="/">AQA</a></h1>
-    <BuildSelector :builds="buildsInfo" :disabled="!dataLoaded" />
-    <Loader v-if="!dataLoaded" />
-    <template v-else>
-      <BuildPipelineInfo :build-info />
-      <TestDetailsToggle v-if="hasFailedTests" />
-      <figure v-if="conclusionImage" class="conclusion-image">
-        <img :src="conclusionImage" alt="Conclusion Image" />
-        <figcaption>{{ hasFailedTests ? '-100' : '+1000' }} Aura</figcaption>
-      </figure>
-      <TestResultsDashboard :test-results />
-    </template>
+    <div class="flex">
+      <h1><a href="/">AQA</a></h1>
+      <button class="btn" @click="showPipelineDrawer = true">
+        Run pipeline
+      </button>
+    </div>
+    <!--    <BuildSelector :builds="buildsInfo" :disabled="!dataLoaded" />-->
+    <!--    <Loader v-if="!dataLoaded" />-->
+    <!--    <template v-else>-->
+    <!--      <BuildPipelineInfo :build-info />-->
+    <!--      <TestDetailsToggle v-if="hasFailedTests" />-->
+<!--    <figure v-if="conclusionImage" class="conclusion-image">-->
+<!--      <img :src="conclusionImage" alt="Conclusion Image" />-->
+<!--      <figcaption>{{ hasFailedTests ? '-100' : '+1000' }} Aura</figcaption>-->
+<!--    </figure>-->
+    <!--      <TestResultsDashboard :test-results />-->
+    <!--    </template>-->
+
+    <Drawer v-model="showPipelineDrawer" title="Run new pipeline">
+      <PipelineRunner />
+    </Drawer>
   </template>
 </template>
