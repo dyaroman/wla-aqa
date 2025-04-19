@@ -139,7 +139,12 @@ onMounted(async () => {
       <TestResultsDashboard :test-results />
     </template>
 
-    <Drawer v-model="appStore.showPipelineDrawer" title="Run pipeline">
+    <Drawer
+      v-model="appStore.showPipelineDrawer"
+      title="Run pipeline"
+      position="right"
+      max-size="400px"
+    >
       <PipelineRunner />
     </Drawer>
   </template>

@@ -11,6 +11,9 @@ const props = defineProps({
     default: 'right',
     validator: (value) => ['left', 'right', 'top', 'bottom'].includes(value),
   },
+  maxSize: {
+    type: String,
+  },
   title: {
     type: String,
     default: '',
@@ -152,6 +155,16 @@ onBeforeUnmount(() => {
         v-if="modelValue"
         class="drawer-container"
         :class="`drawer-${position}`"
+        :style="{
+          maxHeight:
+            position === 'top' || position === 'bottom'
+              ? (maxSize ?? '50vh')
+              : null,
+          maxWidth:
+            position === 'right' || position === 'left'
+              ? (maxSize ?? '50vw')
+              : null,
+        }"
         ref="drawerRef"
         tabindex="-1"
         role="dialog"
