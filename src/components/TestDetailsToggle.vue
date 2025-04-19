@@ -18,13 +18,13 @@ function toggleScreenshots(isOpen) {
       class="btn"
       @click="appStore.allResultsOpen = !appStore.allResultsOpen"
     >
-      {{ appStore.allResultsOpen ? 'Collapse' : 'Expand' }} All Results
+      {{ appStore.allResultsOpen ? 'Collapse' : 'Expand' }} all results
     </button>
     <button
       class="btn"
       @click="toggleScreenshots(!appStore.allScreenshotsOpen)"
     >
-      {{ appStore.allScreenshotsOpen ? 'Collapse' : 'Expand' }} All Screenshots
+      {{ appStore.allScreenshotsOpen ? 'Collapse' : 'Expand' }} all screenshots
     </button>
   </div>
 </template>

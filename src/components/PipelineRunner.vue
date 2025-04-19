@@ -225,7 +225,7 @@ onMounted(() => {
     </fieldset>
 
     <fieldset>
-      <legend>Select mode:</legend>
+      <legend>Mode:</legend>
       <div class="radio-group">
         <Radio name="mode" v-model="mode" value="parallel">parallel</Radio>
         <Radio name="mode" v-model="mode" value="steps">steps</Radio>
@@ -233,7 +233,7 @@ onMounted(() => {
     </fieldset>
 
     <fieldset>
-      <legend>Select env:</legend>
+      <legend>Env:</legend>
 
       <div class="radio-group">
         <Radio name="env" v-model="env" value="feature">feature</Radio>
