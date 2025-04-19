@@ -11,6 +11,8 @@ const mode = ref('parallel');
 const env = ref('dev');
 const url = ref('');
 const tag = ref('');
+const triggeredPipelineInfo = ref(null);
+const disabled = ref(false);
 
 const errors = reactive({
   branch: '',
@@ -56,6 +58,8 @@ async function fetchFormsBranches() {
 }
 
 async function triggerPipeline() {
+  if (disabled.value) return;
+
   validateBranch();
   if (errors.branch !== '') return;
 
@@ -81,9 +85,16 @@ async function triggerPipeline() {
     templateParameters.grep = tag.value;
   }
 
-  console.log(
-    JSON.stringify(
-      {
+  disabled.value = true;
+  await fetch(
+    `https://github.com/dyaroman/wla-e2e/_apis/pipelines/1367/runs?api-version=7.0`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Basic ${btoa(`:${import.meta.env.VITE_AZURE_PAT}`)}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
         resources: {
           repositories: {
             self: {
@@ -92,83 +103,19 @@ async function triggerPipeline() {
           },
         },
         templateParameters,
-      },
-      null,
-      2,
-    ),
-  );
-
-  // await fetch(
-  //   `https://github.com/dyaroman/wla-e2e/_apis/pipelines/1367/runs?api-version=7.0`,
-  //   {
-  //     method: 'POST',
-  //     headers: {
-  //       Authorization: `Basic ${btoa(`:${import.meta.env.VITE_AZURE_PAT}`)}`,
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify({
-  //       resources: {
-  //         repositories: {
-  //           self: {
-  //             refName: `refs/heads/${branch.value}`,
-  //           },
-  //         },
-  //       },
-  //       templateParameters,
-  //     }),
-  //   },
-  // )
-  //   .then((res) => res.json())
-  //   .then((json) => {
-  //     console.log(json);
-  //   });
-
-  // {
-  //   "_links": {
-  //   "self": {
-  //     "href": "https://github.com/dyaroman/REMOVED/_apis/pipelines/1367/runs/269185"
-  //   },
-  //   "web": {
-  //     "href": "https://github.com/dyaroman/REMOVED/_build/results?buildId=269185"
-  //   },
-  //   "pipeline.web": {
-  //     "href": "https://github.com/dyaroman/REMOVED/_build/definition?definitionId=1367"
-  //   },
-  //   "pipeline": {
-  //     "href": "https://github.com/dyaroman/REMOVED/_apis/pipelines/1367?revision=2"
-  //   }
-  // },
-  //   "templateParameters": {
-  //   "mode": "parallel",
-  //     "env": "dev",
-  //     "url": "https://example.com/42_some_feature_here/",
-  //     "grep": "tag"
-  // },
-  //   "pipeline": {
-  //   "url": "https://github.com/dyaroman/REMOVED/_apis/pipelines/1367?revision=2",
-  //     "id": 1367,
-  //     "revision": 2,
-  //     "name": "wla-e2e",
-  //     "folder": "\\"
-  // },
-  //   "state": "inProgress",
-  //   "createdDate": "2025-04-16T11:03:13.6649444Z",
-  //   "url": "https://github.com/dyaroman/REMOVED/_apis/pipelines/1367/runs/269185",
-  //   "resources": {
-  //   "repositories": {
-  //     "self": {
-  //       "repository": {
-  //         "id": "99d396c4-fd8f-49cf-bd97-9e94074062f6",
-  //           "type": "azureReposGit"
-  //       },
-  //       "refName": "refs/heads/feature/111887_loan_purpose_buttons",
-  //         "version": "699eaf2b979f15ad2ce0822b5a7b7a3869a55d1f"
-  //     }
-  //   }
-  // },
-  //   "id": 269185,
-  //   "name": "20250416.1"
-  // }
+      }),
+    },
+  )
+    .then((res) => res.json())
+    .then((json) => {
+      disabled.value = false;
+      triggeredPipelineInfo.value = {
+        link: json._links?.web?.href,
+        state: json.state,
+        id: json.id,
+        name: json.name,
+      };
+    });
 }
 
 function validateBranch() {
@@ -205,7 +152,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <form @submit.prevent="triggerPipeline">
+  <template v-if="triggeredPipelineInfo?.state === 'inProgress'">
+    <h3>
+      Started new pipeline:
+      <a :href="triggeredPipelineInfo.link" target="_blank">{{
+        triggeredPipelineInfo.name
+      }}</a>
+    </h3>
+  </template>
+  <form v-else @submit.prevent="triggerPipeline">
     <fieldset>
       <legend>Branch:</legend>
       <input
@@ -263,7 +218,7 @@ onMounted(() => {
       <input type="text" class="input" v-model="tag" placeholder="Tag" />
     </fieldset>
 
-    <button class="btn" type="submit">Run pipeline</button>
+    <button class="btn" type="submit" :disabled>Run pipeline</button>
   </form>
 </template>
 
