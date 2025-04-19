@@ -127,9 +127,10 @@ onMounted(async () => {
     <template v-else>
       <BuildPipelineInfo :build-info />
       <TestDetailsToggle v-if="hasFailedTests" />
-      <section v-if="conclusionImage" class="conclusion-image">
+      <figure v-if="conclusionImage" class="conclusion-image">
         <img :src="conclusionImage" alt="Conclusion Image" />
-      </section>
+        <figcaption>{{ hasFailedTests ? '-100' : '+1000' }} Aura</figcaption>
+      </figure>
       <TestResultsDashboard :test-results />
     </template>
   </template>
