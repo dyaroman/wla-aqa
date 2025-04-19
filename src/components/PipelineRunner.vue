@@ -2,6 +2,7 @@
 import { onMounted, reactive, ref } from 'vue';
 
 import Radio from '@/components/Radio.vue';
+import Loader from '@/components/Loader.vue';
 import { normalizeUrl } from '@/misc/helpers.js';
 
 const branches = ref(null);
@@ -12,7 +13,7 @@ const env = ref('dev');
 const url = ref('');
 const tag = ref('');
 const triggeredPipelineInfo = ref(null);
-const disabled = ref(false);
+const status = ref('pending');
 
 const errors = reactive({
   branch: '',
@@ -58,7 +59,7 @@ async function fetchFormsBranches() {
 }
 
 async function triggerPipeline() {
-  if (disabled.value) return;
+  if (status.value !== 'pending') return;
 
   validateBranch();
   if (errors.branch !== '') return;
@@ -85,7 +86,8 @@ async function triggerPipeline() {
     templateParameters.grep = tag.value;
   }
 
-  disabled.value = true;
+  status.value = 'inProgress';
+  // todo: handle request's errors
   await fetch(
     `https://github.com/dyaroman/wla-e2e/_apis/pipelines/1367/runs?api-version=7.0`,
     {
@@ -108,7 +110,7 @@ async function triggerPipeline() {
   )
     .then((res) => res.json())
     .then((json) => {
-      disabled.value = false;
+      status.value = 'finished';
       triggeredPipelineInfo.value = {
         link: json._links?.web?.href,
         state: json.state,
@@ -152,15 +154,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <template v-if="triggeredPipelineInfo?.state === 'inProgress'">
-    <h3>
-      Started new pipeline:
-      <a :href="triggeredPipelineInfo.link" target="_blank">{{
-        triggeredPipelineInfo.name
-      }}</a>
-    </h3>
-  </template>
-  <form v-else @submit.prevent="triggerPipeline">
+  <form v-if="status === 'pending'" @submit.prevent="triggerPipeline">
     <fieldset>
       <legend>Branch:</legend>
       <input
@@ -218,8 +212,20 @@ onMounted(() => {
       <input type="text" class="input" v-model="tag" placeholder="Tag" />
     </fieldset>
 
-    <button class="btn" type="submit" :disabled>Run pipeline</button>
+    <button class="btn" type="submit">Run pipeline</button>
   </form>
-</template>
 
-<style scoped></style>
+  <Loader v-else-if="status === 'inProgress'" />
+
+  <template v-else-if="status === 'finished' && triggeredPipelineInfo">
+    <h3>
+      Pipeline completed:
+      <a :href="triggeredPipelineInfo.link" target="_blank">{{
+        triggeredPipelineInfo.name
+      }}</a>
+    </h3>
+    <button class="btn" @click="status = 'pending'">
+      Run another pipeline
+    </button>
+  </template>
+</template>
