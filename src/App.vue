@@ -108,9 +108,9 @@ watch(
 
 onMounted(async () => {
   try {
-    // await loadBuildsInfo();
-    // appStore.latestBuildNumber = buildsInfo.value[0]?.number || '';
-    // initializeBuildNumber();
+    await loadBuildsInfo();
+    appStore.latestBuildNumber = buildsInfo.value[0]?.number || '';
+    initializeBuildNumber();
     appInit.value = true;
   } catch (error) {
     console.error('Failed to initialize app:', error.message);
@@ -130,17 +130,17 @@ onMounted(async () => {
         Run pipeline
       </button>
     </div>
-    <!--    <BuildSelector :builds="buildsInfo" :disabled="!dataLoaded" />-->
-    <!--    <Loader v-if="!dataLoaded" />-->
-    <!--    <template v-else>-->
-    <!--      <BuildPipelineInfo :build-info />-->
-    <!--      <TestDetailsToggle v-if="hasFailedTests" />-->
-<!--    <figure v-if="conclusionImage" class="conclusion-image">-->
-<!--      <img :src="conclusionImage" alt="Conclusion Image" />-->
-<!--      <figcaption>{{ hasFailedTests ? '-100' : '+1000' }} Aura</figcaption>-->
-<!--    </figure>-->
-    <!--      <TestResultsDashboard :test-results />-->
-    <!--    </template>-->
+    <BuildSelector :builds="buildsInfo" :disabled="!dataLoaded" />
+    <Loader v-if="!dataLoaded" />
+    <template v-else>
+      <BuildPipelineInfo :build-info />
+      <TestDetailsToggle v-if="hasFailedTests" />
+      <figure v-if="conclusionImage" class="conclusion-image">
+        <img :src="conclusionImage" alt="Conclusion Image" />
+        <figcaption>{{ hasFailedTests ? '-100' : '+1000' }} Aura</figcaption>
+      </figure>
+      <TestResultsDashboard :test-results />
+    </template>
 
     <Drawer v-model="showPipelineDrawer" title="Run new pipeline">
       <PipelineRunner />

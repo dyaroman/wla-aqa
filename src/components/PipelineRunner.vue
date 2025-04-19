@@ -8,7 +8,7 @@ const branches = ref(null);
 const formsBranches = ref(null);
 const branch = ref('');
 const mode = ref('parallel');
-const env = ref('feature');
+const env = ref('dev');
 const url = ref('');
 const tag = ref('');
 
@@ -29,7 +29,6 @@ async function fetchTestsBranches() {
   )
     .then((res) => res.json())
     .then((json) => {
-      console.log(json);
       branches.value = json?.value?.map((branchInfo) =>
         branchInfo?.name?.replace('refs/heads/', ''),
       );
@@ -48,7 +47,6 @@ async function fetchFormsBranches() {
   )
     .then((res) => res.json())
     .then((json) => {
-      console.log(json);
       formsBranches.value = json?.value
         ?.filter((branchInfo) => branchInfo?.name?.includes('feature/'))
         ?.map((branchInfo) =>
