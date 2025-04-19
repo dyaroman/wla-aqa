@@ -6,11 +6,13 @@ export const useAppStore = defineStore('app', () => {
   const allScreenshotsOpen = ref(false);
   const buildNumber = ref('');
   const latestBuildNumber = ref('');
+  const showPipelineDrawer = ref(false);
 
   return {
     allResultsOpen,
     allScreenshotsOpen,
     buildNumber,
     latestBuildNumber,
+    showPipelineDrawer,
   };
 });

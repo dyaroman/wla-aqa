@@ -2,6 +2,7 @@
 import { computed, onMounted, ref, watch } from 'vue';
 
 import Loader from '@/components/Loader.vue';
+import Header from '@/components/Header.vue';
 import PipelineRunner from '@/components/PipelineRunner.vue';
 import Drawer from '@/components/Drawer.vue';
 import BuildSelector from '@/components/BuildSelector.vue';
@@ -19,7 +20,6 @@ const buildsInfo = ref([]); // previous + latest
 const buildInfo = ref(null);
 const testResults = ref([]);
 const conclusionImage = ref(null);
-const showPipelineDrawer = ref(false);
 
 const hasFailedTests = computed(
   () => testResults.value.filter((test) => test.fail).length > 0,
@@ -124,14 +124,7 @@ onMounted(async () => {
     <h2>Failed to load tests results data</h2>
   </template>
   <template v-else>
-    <header class="header">
-      <div class="flex">
-        <h1><a href="/">AQA</a></h1>
-        <button class="btn" @click="showPipelineDrawer = true">
-          Run pipeline
-        </button>
-      </div>
-    </header>
+    <Header />
     <BuildSelector :builds="buildsInfo" :disabled="!dataLoaded" />
     <Loader v-if="!dataLoaded" />
     <template v-else>
@@ -146,7 +139,7 @@ onMounted(async () => {
       <TestResultsDashboard :test-results />
     </template>
 
-    <Drawer v-model="showPipelineDrawer" title="Run new pipeline">
+    <Drawer v-model="appStore.showPipelineDrawer" title="Run pipeline">
       <PipelineRunner />
     </Drawer>
   </template>
