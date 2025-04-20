@@ -20,24 +20,47 @@ const formsLink = buildInfo?.['formsUrl'];
 </script>
 
 <template>
-  <section>
-    <h2>
-      Build:
-      <a :href="buildLink" target="_blank" rel="noopener noreferrer"
-        >#{{ appStore.buildNumber }}</a
-      >
-    </h2>
-    <h2 v-if="buildInfo['pipelineBranch']">
-      Pipeline branch:
-      <a :href="gitLink" target="_blank" rel="noopener noreferrer">{{
-        pipelineBranch
-      }}</a>
-    </h2>
-    <h2 v-if="formsLink">
-      Forms feature branch:
-      <a :href="formsLink" target="_blank" rel="noopener noreferrer">{{
-        formsLink.replace(/https?:\/\//, '')
-      }}</a>
-    </h2>
+  <section class="build-info">
+    <div class="build-info__row">
+      <div class="build-info__key">Build</div>
+      <div class="build-info__value">
+        <a :href="buildLink" target="_blank" rel="noopener noreferrer"
+          >#{{ appStore.buildNumber }}</a
+        >
+      </div>
+    </div>
+
+    <div v-if="buildInfo['pipelineBranch']" class="build-info__row">
+      <div class="build-info__key">Pipeline branch</div>
+      <div class="build-info__value">
+        <a :href="gitLink" target="_blank" rel="noopener noreferrer">{{
+          pipelineBranch
+        }}</a>
+      </div>
+    </div>
+
+    <div v-if="formsLink" class="build-info__row">
+      <div class="build-info__key">Forms feature branch</div>
+      <div class="build-info__value">
+        <a :href="formsLink" target="_blank" rel="noopener noreferrer">{{
+          formsLink.replace(/https?:\/\//, '')
+        }}</a>
+      </div>
+    </div>
+
+    <div v-if="buildInfo['grep']" class="build-info__row">
+      <div class="build-info__key">Tag</div>
+      <div class="build-info__value">{{ buildInfo['grep'] }}</div>
+    </div>
+
+    <div v-if="buildInfo['mode']" class="build-info__row">
+      <div class="build-info__key">Mode</div>
+      <div class="build-info__value">{{ buildInfo['mode'] }}</div>
+    </div>
+
+    <div v-if="buildInfo['env']" class="build-info__row">
+      <div class="build-info__key">Env</div>
+      <div class="build-info__value">{{ buildInfo['env'] }}</div>
+    </div>
   </section>
 </template>

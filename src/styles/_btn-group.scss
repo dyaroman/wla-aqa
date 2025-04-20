@@ -11,7 +11,7 @@
     align-items: center;
 
     .btn {
-      width: calc(50% - var.$gap / 2);
+      width: calc(50% - #{var.$gap} / 2);
     }
   }
 }

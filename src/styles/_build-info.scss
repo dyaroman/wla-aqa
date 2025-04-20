@@ -1,0 +1,54 @@
+@use 'var';
+
+.build-info {
+  display: flex;
+  flex-direction: column;
+  margin-block: 2 * var.$gap;
+
+  border: var.$border-width solid var(--border-color);
+
+  @media (min-width: 799px) {
+    flex-direction: row;
+  }
+}
+
+.build-info__row {
+  display: flex;
+  flex-direction: row;
+
+  & + & {
+    border-top: var.$border-width solid var(--border-color);
+  }
+
+  @media (min-width: 799px) {
+    flex-direction: column;
+    flex-grow: 1;
+
+    & + & {
+      border-top: none;
+      border-left: var.$border-width solid var(--border-color);
+    }
+  }
+}
+
+.build-info__key,
+.build-info__value {
+  padding: var.$gap;
+}
+
+.build-info__key {
+  width: 45%;
+  flex-shrink: 0;
+
+  font-weight: 700;
+
+  border-right: var.$border-width solid var(--border-color);
+  background-color: var(--secondary-bg);
+
+  @media (min-width: 799px) {
+    width: auto;
+
+    border-right: none;
+    border-bottom: var.$border-width solid var(--border-color);
+  }
+}
