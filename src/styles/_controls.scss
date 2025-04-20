@@ -22,9 +22,16 @@
 }
 
 fieldset {
-  margin-block: var.$gap * 2;
+  position: relative;
+
+  margin: 2 * var.$gap 0;
+  padding: var.$gap;
 
   border: var.$border-width solid var(--border-color);
+}
+
+legend {
+  padding: 0;
 }
 
 .radio-group {

@@ -78,11 +78,17 @@ pre {
 }
 
 .validation-error {
+  position: absolute;
+  bottom: var.$gap * -1;
+
   display: block;
-  margin-block: var.$gap;
+  padding-inline: calc(#{var.$gap} + #{var.$border-width});
 
   font-size: 0.75rem;
+  line-height: 1;
   color: var(--fail-color);
+
+  background-color: var(--body-bg);
 }
 
 .screenshot {

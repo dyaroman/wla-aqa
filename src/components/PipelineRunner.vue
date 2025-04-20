@@ -5,7 +5,7 @@ import Radio from '@/components/Radio.vue';
 import Loader from '@/components/Loader.vue';
 import { normalizeUrl } from '@/misc/helpers.js';
 
-const branches = ref(null);
+const testsBranches = ref(null);
 const formsBranches = ref(null);
 const branch = ref('');
 const mode = ref('parallel');
@@ -18,56 +18,38 @@ const status = ref('pending');
 const errors = reactive({
   branch: '',
   url: '',
+  triggerPipeline: '',
 });
 
-async function fetchTestsBranches() {
-  await fetch(
-    `https://github.com/dyaroman/wla-e2e/_apis/git/repositories/wla-e2e/refs?filter=heads/&api-version=7.0`,
-    {
-      headers: {
-        // todo use backend to store azure PAT there
-        Authorization: `Basic ${btoa(`:${import.meta.env.VITE_AZURE_PAT}`)}`,
-      },
+async function fetchBranches() {
+  const data = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/branches`, {
+    headers: {
+      Authorization: `Bearer ${import.meta.env.VITE_BACKEND_API_KEY}`,
     },
-  )
+  })
     .then((res) => res.json())
-    .then((json) => {
-      branches.value = json?.value?.map((branchInfo) =>
-        branchInfo?.name?.replace('refs/heads/', ''),
-      );
+    .catch((e) => {
+      console.error(e.message);
+      errors.triggerPipeline = 'Failed to fetch branches: ' + e.message;
+      status.value = 'error';
     });
-}
 
-async function fetchFormsBranches() {
-  await fetch(
-    `https://github.com/dyaroman/LM JS Forms/_apis/git/repositories/wla-e2e/refs?filter=heads/&api-version=7.0`,
-    {
-      headers: {
-        // todo use backend to store azure PAT there
-        Authorization: `Basic ${btoa(`:${import.meta.env.VITE_AZURE_PAT}`)}`,
-      },
-    },
-  )
-    .then((res) => res.json())
-    .then((json) => {
-      formsBranches.value = json?.value
-        ?.filter((branchInfo) => branchInfo?.name?.includes('feature/'))
-        ?.map((branchInfo) =>
-          branchInfo?.name?.replace('refs/heads/feature/', ''),
-        );
-    });
+  if (data) {
+    formsBranches.value = data['formsBranches'];
+    testsBranches.value = data['testsBranches'];
+  }
 }
 
 async function triggerPipeline() {
   if (status.value !== 'pending') return;
 
   validateBranch();
-  if (errors.branch !== '') return;
 
   if (env.value === 'feature') {
     validateFeatureUrl();
-    if (errors.url !== '') return;
   }
+  if (errors.branch !== '') return;
+  if (errors.url !== '') return;
 
   const templateParameters = {
     mode: mode.value,
@@ -87,44 +69,40 @@ async function triggerPipeline() {
   }
 
   status.value = 'inProgress';
-  // todo: handle request's errors
-  await fetch(
-    `https://github.com/dyaroman/wla-e2e/_apis/pipelines/1367/runs?api-version=7.0`,
-    {
-      method: 'POST',
-      headers: {
-        Authorization: `Basic ${btoa(`:${import.meta.env.VITE_AZURE_PAT}`)}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        resources: {
-          repositories: {
-            self: {
-              refName: `refs/heads/${branch.value}`,
-            },
-          },
-        },
-        templateParameters,
-      }),
+  await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/trigger-pipeline`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${import.meta.env.VITE_BACKEND_API_KEY}`,
+      'Content-Type': 'application/json',
     },
-  )
+    body: JSON.stringify({
+      branch: branch.value,
+      templateParameters,
+    }),
+  })
     .then((res) => res.json())
     .then((json) => {
-      status.value = 'finished';
-      triggeredPipelineInfo.value = {
-        link: json._links?.web?.href,
-        state: json.state,
-        id: json.id,
-        name: json.name,
-      };
+      if (json.error) {
+        console.error(json.error);
+        errors.triggerPipeline = json.error;
+        status.value = 'error';
+      } else {
+        triggeredPipelineInfo.value = json;
+        status.value = 'finished';
+      }
+    })
+    .catch((e) => {
+      console.error(e);
+      errors.triggerPipeline = 'Failed to trigger pipeline: ' + e.message;
+      status.value = 'error';
     });
 }
 
 function validateBranch() {
   if (branch.value.trim() === '') {
-    errors.branch = 'Branch cannot be empty';
+    errors.branch = 'Branch is required';
   } else if (
-    !branches.value?.some(
+    !testsBranches.value?.some(
       (b) => b?.toLowerCase() === branch.value?.toLowerCase(),
     )
   ) {
@@ -136,7 +114,7 @@ function validateBranch() {
 
 function validateFeatureUrl() {
   if (url.value.trim() === '') {
-    errors.url = 'Feature URL cannot be empty';
+    errors.url = 'Feature URL is required';
   } else if (
     !formsBranches.value?.some(
       (branch) => branch?.toLowerCase() === url.value?.toLowerCase(),
@@ -149,7 +127,7 @@ function validateFeatureUrl() {
 }
 
 onMounted(() => {
-  Promise.all([fetchTestsBranches(), fetchFormsBranches()]);
+  fetchBranches();
 });
 </script>
 
@@ -161,12 +139,12 @@ onMounted(() => {
         type="text"
         class="input"
         placeholder="Branch"
-        list="branches"
+        list="tests-branches"
         v-model="branch"
         @blur="validateBranch"
       />
-      <datalist id="branches">
-        <option v-for="branch in branches" :key="branch" :value="branch" />
+      <datalist id="tests-branches">
+        <option v-for="branch in testsBranches" :key="branch" :value="branch" />
       </datalist>
       <div class="validation-error" v-if="errors.branch">
         {{ errors.branch }}
@@ -228,4 +206,11 @@ onMounted(() => {
       Run another pipeline
     </button>
   </template>
+
+  <h3 v-else-if="status === 'error'">
+    <template v-if="errors.triggerPipeline"
+      >{{ errors.triggerPipeline }}
+    </template>
+    <template v-else>Failed to trigger pipeline</template>
+  </h3>
 </template>
