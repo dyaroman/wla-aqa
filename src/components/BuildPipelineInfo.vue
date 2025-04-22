@@ -10,57 +10,82 @@ const { buildInfo } = defineProps({
 });
 
 const buildLink = `https://github.com/dyaroman/wla-e2e/_build/results?buildId=${buildInfo?.['buildId']}&view=results`;
-
 const pipelineBranch = buildInfo?.['pipelineBranch']?.replace(
   'refs/heads/',
   '',
 );
 const gitLink = `https://github.com/dyaroman/wla-e2e/_git/wla-e2e?path=/&version=GB${pipelineBranch}`;
-const formsLink = buildInfo?.['formsUrl'];
+
+function normalizeFormsBranchText(branch) {
+  let branchName = branch;
+  branchName = branchName
+    .replace(/https?:\/\//, '')
+    .replace('example.com/', '');
+  if (branchName.endsWith('/')) {
+    branchName = branchName.slice(0, -1);
+  }
+  return branchName;
+}
+
+function normalizeFormsBranchLink(branch) {
+  let branchLink = branch.trim();
+  if (!branchLink.includes('example.com')) {
+    branchLink = `example.com/${branchLink}`;
+  }
+  if (!/https?:\/\//.test(branchLink)) {
+    branchLink = `https://${branchLink}`;
+  }
+  if (!branchLink.endsWith('/')) {
+    branchLink = `${branchLink}/`;
+  }
+  return branchLink;
+}
 </script>
 
 <template>
   <section class="build-info">
-    <div class="build-info__row">
-      <div class="build-info__key">Build</div>
-      <div class="build-info__value">
-        <a :href="buildLink" target="_blank" rel="noopener noreferrer"
-          >#{{ appStore.buildNumber }}</a
-        >
-      </div>
-    </div>
-
-    <div v-if="buildInfo['pipelineBranch']" class="build-info__row">
-      <div class="build-info__key">Pipeline branch</div>
-      <div class="build-info__value">
-        <a :href="gitLink" target="_blank" rel="noopener noreferrer">{{
-          pipelineBranch
-        }}</a>
-      </div>
-    </div>
-
-    <div v-if="formsLink" class="build-info__row">
-      <div class="build-info__key">Forms feature branch</div>
-      <div class="build-info__value">
-        <a :href="formsLink" target="_blank" rel="noopener noreferrer">{{
-          formsLink.replace(/https?:\/\//, '')
-        }}</a>
-      </div>
-    </div>
-
-    <div v-if="buildInfo['grep']" class="build-info__row">
-      <div class="build-info__key">Tag</div>
-      <div class="build-info__value">{{ buildInfo['grep'] }}</div>
-    </div>
-
-    <div v-if="buildInfo['mode']" class="build-info__row">
-      <div class="build-info__key">Mode</div>
-      <div class="build-info__value">{{ buildInfo['mode'] }}</div>
-    </div>
-
-    <div v-if="buildInfo['env']" class="build-info__row">
-      <div class="build-info__key">Env</div>
-      <div class="build-info__value">{{ buildInfo['env'] }}</div>
-    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Build</th>
+          <th v-if="buildInfo['pipelineBranch']">Tests branch</th>
+          <th v-if="buildInfo['formsUrl']">Forms branch</th>
+          <th v-if="buildInfo['grep']">Tag</th>
+          <th v-if="buildInfo['mode']">Mode</th>
+          <th v-if="buildInfo['env']">Env</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td data-title="Build">
+            <a :href="buildLink" target="_blank" rel="noopener noreferrer"
+              >#{{ appStore.buildNumber }}</a
+            >
+          </td>
+          <td v-if="buildInfo['pipelineBranch']" data-title="Tests branch">
+            <a :href="gitLink" target="_blank" rel="noopener noreferrer">{{
+              pipelineBranch
+            }}</a>
+          </td>
+          <td v-if="buildInfo['formsUrl']" data-title="Forms branch">
+            <a
+              :href="normalizeFormsBranchLink(buildInfo['formsUrl'])"
+              target="_blank"
+              rel="noopener noreferrer"
+              >{{ normalizeFormsBranchText(buildInfo['formsUrl']) }}</a
+            >
+          </td>
+          <td v-if="buildInfo['grep']" data-title="Tag">
+            {{ buildInfo['grep'] }}
+          </td>
+          <td v-if="buildInfo['mode']" data-title="Mode">
+            {{ buildInfo['mode'] }}
+          </td>
+          <td v-if="buildInfo['env']" data-title="Env">
+            {{ buildInfo['env'] }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </section>
 </template>
