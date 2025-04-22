@@ -6,18 +6,18 @@ import Loader from '@/components/Loader.vue';
 import { normalizeUrl } from '@/misc/helpers.js';
 
 const testsBranches = ref(null);
+const testsBranch = ref('');
 const formsBranches = ref(null);
-const branch = ref('');
+const formsBranch = ref('');
 const mode = ref('parallel');
 const env = ref('dev');
-const url = ref('');
 const tag = ref('');
 const triggeredPipelineInfo = ref(null);
 const status = ref('pending');
 
 const errors = reactive({
-  branch: '',
-  url: '',
+  testsBranch: '',
+  formsBranch: '',
   triggerPipeline: '',
 });
 
@@ -43,21 +43,24 @@ async function fetchBranches() {
 async function triggerPipeline() {
   if (status.value !== 'pending') return;
 
-  validateBranch();
+  validateTestsBranch();
+  normalizeTestsBranch();
 
   if (env.value === 'feature') {
-    validateFeatureUrl();
+    validateFormsBranch();
+    normalizeFormsBranch();
   }
-  if (errors.branch !== '') return;
-  if (errors.url !== '') return;
+
+  if (errors.testsBranch !== '') return;
+  if (errors.formsBranch !== '') return;
 
   const templateParameters = {
     mode: mode.value,
     env: env.value,
   };
 
-  if (url.value) {
-    let link = url.value;
+  if (formsBranch.value) {
+    let link = formsBranch.value;
     if (!link?.includes('example')) {
       link = `https://example.com/${link}`;
     }
@@ -76,7 +79,7 @@ async function triggerPipeline() {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      branch: branch.value,
+      branch: testsBranch.value,
       templateParameters,
     }),
   })
@@ -98,31 +101,55 @@ async function triggerPipeline() {
     });
 }
 
-function validateBranch() {
-  if (branch.value.trim() === '') {
-    errors.branch = 'Branch is required';
-  } else if (
-    !testsBranches.value?.some(
-      (b) => b?.toLowerCase() === branch.value?.toLowerCase(),
-    )
-  ) {
-    errors.branch = 'Enter a valid branch';
-  } else {
-    errors.branch = '';
+function normalizeTestsBranch() {
+  if (!testsBranch.value.trim() || !testsBranches.value) return;
+
+  const matchingBranch = testsBranches.value.find(
+    (branch) => branch?.toLowerCase() === testsBranch.value?.toLowerCase(),
+  );
+
+  if (matchingBranch) {
+    testsBranch.value = matchingBranch;
   }
 }
 
-function validateFeatureUrl() {
-  if (url.value.trim() === '') {
-    errors.url = 'Feature URL is required';
+function validateTestsBranch() {
+  if (testsBranch.value.trim() === '') {
+    errors.testsBranch = 'Tests branch is required';
   } else if (
-    !formsBranches.value?.some(
-      (branch) => branch?.toLowerCase() === url.value?.toLowerCase(),
+    !testsBranches.value?.some(
+      (branch) => branch?.toLowerCase() === testsBranch.value?.toLowerCase(),
     )
   ) {
-    errors.url = 'Enter a valid feature URL';
+    errors.testsBranch = 'Enter a valid branch';
   } else {
-    errors.url = '';
+    errors.testsBranch = '';
+  }
+}
+
+function normalizeFormsBranch() {
+  if (!formsBranch.value.trim() || !formsBranches.value) return;
+
+  const matchingBranch = formsBranches.value.find(
+    (branch) => branch?.toLowerCase() === formsBranch.value?.toLowerCase(),
+  );
+
+  if (matchingBranch) {
+    formsBranch.value = matchingBranch;
+  }
+}
+
+function validateFormsBranch() {
+  if (formsBranch.value.trim() === '') {
+    errors.formsBranch = 'Forms branch is required';
+  } else if (
+    !formsBranches.value?.some(
+      (branch) => branch?.toLowerCase() === formsBranch.value?.toLowerCase(),
+    )
+  ) {
+    errors.formsBranch = 'Enter a valid branch';
+  } else {
+    errors.formsBranch = '';
   }
 }
 
@@ -134,20 +161,31 @@ onMounted(() => {
 <template>
   <form v-if="status === 'pending'" @submit.prevent="triggerPipeline">
     <fieldset>
-      <legend>Branch:</legend>
+      <legend>Tests branch:</legend>
       <input
         type="text"
         class="input"
-        placeholder="Branch"
+        placeholder="Tests branch"
         list="tests-branches"
-        v-model="branch"
-        @blur="validateBranch"
+        v-model="testsBranch"
+        @blur="
+          () => {
+            validateTestsBranch();
+            normalizeTestsBranch();
+          }
+        "
       />
-      <datalist id="tests-branches">
+      <datalist
+        id="tests-branches"
+        v-if="
+          testsBranches?.length > 0 &&
+          !testsBranches.find((i) => testsBranch === i)
+        "
+      >
         <option v-for="branch in testsBranches" :key="branch" :value="branch" />
       </datalist>
-      <div class="validation-error" v-if="errors.branch">
-        {{ errors.branch }}
+      <div class="validation-error" v-if="errors.testsBranch">
+        {{ errors.testsBranch }}
       </div>
     </fieldset>
 
@@ -170,19 +208,32 @@ onMounted(() => {
     </fieldset>
 
     <fieldset v-if="env === 'feature'">
-      <legend>Feature's URL:</legend>
+      <legend>Forms branch:</legend>
       <input
         type="text"
         class="input"
-        placeholder="Feature's URL"
+        placeholder="Forms branch"
         list="forms-branches"
-        v-model="url"
-        @blur="validateFeatureUrl"
+        v-model="formsBranch"
+        @blur="
+          () => {
+            validateFormsBranch();
+            normalizeFormsBranch();
+          }
+        "
       />
-      <datalist id="forms-branches">
+      <datalist
+        id="forms-branches"
+        v-if="
+          formsBranches?.length > 0 &&
+          !formsBranches.find((i) => formsBranch === i)
+        "
+      >
         <option v-for="branch in formsBranches" :key="branch" :value="branch" />
       </datalist>
-      <div class="validation-error" v-if="errors.url">{{ errors.url }}</div>
+      <div class="validation-error" v-if="errors.formsBranch">
+        {{ errors.formsBranch }}
+      </div>
     </fieldset>
 
     <fieldset>
