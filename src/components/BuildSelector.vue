@@ -36,22 +36,27 @@ function groupItemsByDate(arr) {
 <template>
   <section>
     <h2>Select build:</h2>
-    <select class="select" v-model="buildNumber" :disabled="disabled">
-      <option value="" disabled>Select build</option>
-      <optgroup
-        v-for="(group, date) in groupedBuilds"
-        :key="date"
-        :label="date"
-      >
-        <option
-          v-for="build in group"
-          :key="build.number"
-          :value="build.number"
+    <div
+      class="select-wrapper"
+      :class="{ 'select-wrapper--disabled': disabled }"
+    >
+      <select class="select" v-model="buildNumber" :disabled>
+        <option value="" disabled>Select build</option>
+        <optgroup
+          v-for="(group, date) in groupedBuilds"
+          :key="date"
+          :label="date"
         >
-          {{ reformatBuildNumber(build.number) }} -
-          {{ timeAgo(build.timestamp) }}
-        </option>
-      </optgroup>
-    </select>
+          <option
+            v-for="build in group"
+            :key="build.number"
+            :value="build.number"
+          >
+            {{ reformatBuildNumber(build.number) }} -
+            {{ timeAgo(build.timestamp) }}
+          </option>
+        </optgroup>
+      </select>
+    </div>
   </section>
 </template>
