@@ -2,8 +2,10 @@
 import ImageWithLoader from '@/components/ImageWithLoader.vue';
 import { getBuildPath, reformatErrorMessage } from '@/misc/helpers.js';
 import { useAppStore } from '@/stores/appStore';
+import { useDetailsStore } from '@/stores/detailsStore.js';
 
 const appStore = useAppStore();
+const detailsStore = useDetailsStore();
 
 const { category, testResult } = defineProps({
   category: {
@@ -12,6 +14,10 @@ const { category, testResult } = defineProps({
   },
   testResult: {
     type: Object,
+    required: true,
+  },
+  index: {
+    type: Number,
     required: true,
   },
 });
@@ -23,14 +29,21 @@ const src = `https://dyaroman.github.io/wla-e2e/data/${path}images/${testResult[
 </script>
 
 <template>
-  <details v-if="category === 'fail'" :open="appStore.allResultsOpen">
+  <details
+    v-if="category === 'fail'"
+    :open="detailsStore.results[index] ?? false"
+    @toggle="detailsStore.setResultOpened(index, $event.target.open)"
+  >
     <summary>{{ testResult['title'] }}</summary>
     <div class="error-message" v-if="testResult['fail']">
       <pre v-if="errorMessage.includes('{')">{{ errorMessage }}</pre>
       <template v-else>
         {{ errorMessage?.replaceAll('\\', '') }}
       </template>
-      <details :open="appStore.allScreenshotsOpen">
+      <details
+        :open="detailsStore.screenshots[index] ?? false"
+        @toggle="detailsStore.setScreenshotOpened(index, $event.target.open)"
+      >
         <summary>Screenshot</summary>
         <div class="screenshot">
           <ImageWithLoader :src alt="Failed to load screenshot" />

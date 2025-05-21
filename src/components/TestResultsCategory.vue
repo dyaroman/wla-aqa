@@ -1,5 +1,8 @@
 <script setup>
+import { onMounted } from 'vue';
+
 import TestResultItem from '@/components/TestResultItem.vue';
+import { useDetailsStore } from '@/stores/detailsStore.js';
 
 const { category, testResults } = defineProps({
   category: {
@@ -31,6 +34,13 @@ switch (category) {
 title += `: ${testResults.length}`;
 
 const initialOpen = category === 'fail' && testResults.length > 0;
+const detailsStore = useDetailsStore();
+
+onMounted(() => {
+  if (category === 'fail') {
+    detailsStore.initItems(testResults.length);
+  }
+});
 </script>
 
 <template>
@@ -48,8 +58,8 @@ const initialOpen = category === 'fail' && testResults.length > 0;
       {{ title }}
     </summary>
     <ul>
-      <li v-for="testResult in testResults" :key="testResult.uuid">
-        <TestResultItem :category :test-result />
+      <li v-for="(testResult, index) in testResults" :key="testResult.uuid">
+        <TestResultItem :category :test-result :index />
       </li>
     </ul>
   </details>

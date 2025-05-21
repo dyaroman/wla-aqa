@@ -66,8 +66,6 @@ async function loadBuildData() {
     ]);
     buildInfo.value = buildInfoJson;
     testResults.value = testResultsJson;
-    appStore.allResultsOpen = false;
-    appStore.allScreenshotsOpen = false;
     dataLoaded.value = true;
   } catch (error) {
     console.error('Failed to load build data:', error.message);

@@ -1,13 +1,13 @@
 <script setup>
-import { useAppStore } from '@/stores/appStore';
+import { useDetailsStore } from '@/stores/detailsStore.js';
 
-const appStore = useAppStore();
+const detailsStore = useDetailsStore();
 
 function toggleScreenshots(isOpen) {
-  appStore.allScreenshotsOpen = isOpen;
+  detailsStore.toggleAllScreenshots(isOpen);
 
-  if (isOpen) {
-    appStore.allResultsOpen = true;
+  if (isOpen && !detailsStore.allResultsOpened) {
+    detailsStore.toggleAllResults(true);
   }
 }
 </script>
@@ -16,15 +16,16 @@ function toggleScreenshots(isOpen) {
   <div class="btn-group">
     <button
       class="btn"
-      @click="appStore.allResultsOpen = !appStore.allResultsOpen"
+      @click="detailsStore.toggleAllResults(!detailsStore.allResultsOpened)"
     >
-      {{ appStore.allResultsOpen ? 'Collapse' : 'Expand' }} all results
+      {{ detailsStore.allResultsOpened ? 'Collapse' : 'Expand' }} all results
     </button>
     <button
       class="btn"
-      @click="toggleScreenshots(!appStore.allScreenshotsOpen)"
+      @click="toggleScreenshots(!detailsStore.allScreenshotsOpened)"
     >
-      {{ appStore.allScreenshotsOpen ? 'Collapse' : 'Expand' }} all screenshots
+      {{ detailsStore.allScreenshotsOpened ? 'Collapse' : 'Expand' }} all
+      screenshots
     </button>
   </div>
 </template>
