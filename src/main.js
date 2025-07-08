@@ -5,9 +5,8 @@ import './styles/index.scss';
 import App from './App.vue';
 
 const app = createApp(App);
-const pinia = createPinia();
 
-app.use(pinia);
+app.use(createPinia());
 app.mount('#app');
 
 console.log('app commit:', __APP_COMMIT__);
