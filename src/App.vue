@@ -3,8 +3,8 @@ import { computed, onMounted, ref, watch } from 'vue';
 
 import Loader from '@/components/Loader.vue';
 import Header from '@/components/Header.vue';
-import PipelineRunner from '@/components/PipelineRunner.vue';
-import Drawer from '@/components/Drawer.vue';
+// import PipelineRunner from '@/components/PipelineRunner.vue';
+// import Drawer from '@/components/Drawer.vue';
 import BuildSelector from '@/components/BuildSelector.vue';
 import BuildPipelineInfo from '@/components/BuildPipelineInfo.vue';
 import TestResultsDashboard from '@/components/TestResultsDashboard.vue';
@@ -137,13 +137,13 @@ onMounted(async () => {
       <TestResultsDashboard :test-results />
     </template>
 
-    <Drawer
-      v-model="appStore.showPipelineDrawer"
-      title="Run pipeline"
-      position="right"
-      max-size="400px"
-    >
-      <PipelineRunner />
-    </Drawer>
+    <!--    <Drawer-->
+    <!--      v-model="appStore.showPipelineDrawer"-->
+    <!--      title="Run pipeline"-->
+    <!--      position="right"-->
+    <!--      max-size="400px"-->
+    <!--    >-->
+    <!--      <PipelineRunner />-->
+    <!--    </Drawer>-->
   </template>
 </template>
