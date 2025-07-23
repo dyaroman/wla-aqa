@@ -16,7 +16,8 @@ const failed = computed(() => testResults.filter((test) => test.fail));
 const skipped = computed(() => testResults.filter((test) => test.skipped));
 
 const documentTitle = computed(
-  () => `[${failed.value.length}/${testResults.length}]: AQA`,
+  () =>
+    `[${passed.value.length}/${passed.value.length + failed.value.length}]: AQA`,
 );
 const shouldShowGreenFavicon = computed(() => failed.value.length === 0);
 
