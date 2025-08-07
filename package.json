@@ -21,7 +21,7 @@
     "vite": "^7.0.6",
     "vite-plugin-vue-devtools": "^8.0.0",
     "vue": "^3.5.18",
-    "wrangler": "^4.16.0"
+    "wrangler": "^4.28.0"
   },
   "devDependencies": {
     "husky": "^9.1.7",
