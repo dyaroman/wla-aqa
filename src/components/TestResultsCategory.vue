@@ -81,4 +81,11 @@ onMounted(() => {
 
   list-style: none;
 }
+
+.fail li {
+  padding: 0.5rem;
+  margin-block: 1rem;
+
+  border: 2px solid currentColor;
+}
 </style>
