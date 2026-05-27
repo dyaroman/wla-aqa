@@ -1,9 +1,9 @@
 <script setup>
-import { computed } from 'vue';
-import { storeToRefs } from 'pinia';
+import { computed } from "vue";
+import { storeToRefs } from "pinia";
 
-import { reformatBuildNumber, timeAgo } from '@/misc/helpers.js';
-import { useAppStore } from '@/stores/appStore.js';
+import { reformatBuildNumber, timeAgo } from "@/misc/helpers.js";
+import { useAppStore } from "@/stores/appStore.js";
 
 const { buildNumber } = storeToRefs(useAppStore());
 const { builds } = defineProps({
@@ -22,8 +22,11 @@ const groupedBuilds = computed(() => groupItemsByDate(builds));
 function groupItemsByDate(arr) {
   const groups = {};
   for (const item of arr) {
-    const date = item.timestamp.split(' ')[1].split('/'); // 04/14/2025
-    const group = `${date[2]}/${date[0]}/${date[1]}`; // 2025/04/14
+    const d = new Date(item.timestamp);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    const group = `${year}/${month}/${day}`;
     if (!groups[group]) {
       groups[group] = [];
     }

@@ -43,7 +43,8 @@ export function updateFavicon(isGreen) {
   const link =
     document.querySelector('link[rel*=icon]') || document.createElement('link');
   link.rel = 'icon';
-  link.href = isGreen ? '/green.ico' : '/red.ico';
+  const base = import.meta.env.BASE_URL;
+  link.href = isGreen ? `${base}green.ico` : `${base}red.ico`;
   document.head.appendChild(link);
 }
 
