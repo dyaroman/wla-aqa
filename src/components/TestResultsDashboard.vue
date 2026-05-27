@@ -1,12 +1,16 @@
 <script setup>
-import { computed, onMounted } from 'vue';
+import { computed, onMounted } from "vue";
 
-import TestResultsCategory from '@/components/TestResultsCategory.vue';
-import { updateFavicon } from '@/misc/helpers.js';
+import TestResultsCategory from "@/components/TestResultsCategory.vue";
+import { updateFavicon } from "@/misc/helpers.js";
 
-const { testResults } = defineProps({
+const { testResults, hasFailedTests } = defineProps({
   testResults: {
     type: Array,
+    required: true,
+  },
+  hasFailedTests: {
+    type: Boolean,
     required: true,
   },
 });
@@ -19,11 +23,10 @@ const documentTitle = computed(
   () =>
     `[${passed.value.length}/${passed.value.length + failed.value.length}]: AQA`,
 );
-const shouldShowGreenFavicon = computed(() => failed.value.length === 0);
 
 onMounted(() => {
   document.title = documentTitle.value;
-  updateFavicon(shouldShowGreenFavicon.value);
+  updateFavicon(!hasFailedTests);
 });
 </script>
 

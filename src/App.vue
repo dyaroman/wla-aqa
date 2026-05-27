@@ -8,6 +8,7 @@ import BuildPipelineInfo from "@/components/BuildPipelineInfo.vue";
 import TestResultsDashboard from "@/components/TestResultsDashboard.vue";
 import TestDetailsToggle from "@/components/TestDetailsToggle.vue";
 import { getBuildPath, updateBuildNumberInUrl } from "@/misc/helpers.js";
+import { E2E_BASE_URL } from "@/misc/config.js";
 import { useAppStore } from "@/stores/appStore";
 
 const appStore = useAppStore();
@@ -29,10 +30,8 @@ const buildNumberFromUrl = new URLSearchParams(window.location.search).get(
 async function loadBuildsInfo() {
   try {
     const [previousBuildsInfo, latestBuildInfo] = await Promise.all([
-      fetch(`https://dyaroman.github.io/wla-e2e/builds.json`).then((res) =>
-        res.json(),
-      ),
-      fetch(`https://dyaroman.github.io/wla-e2e/build-info.json`)
+      fetch(`${E2E_BASE_URL}/builds.json`).then((res) => res.json()),
+      fetch(`${E2E_BASE_URL}/build-info.json`)
         .then((res) => res.json())
         .then((json) => ({
           number: json["buildNumber"],
@@ -55,12 +54,8 @@ async function loadBuildData() {
   try {
     const path = getBuildPath(appStore.buildNumber, appStore.latestBuildNumber);
     const [buildInfoJson, testResultsJson] = await Promise.all([
-      fetch(`https://dyaroman.github.io/wla-e2e/${path}build-info.json`).then(
-        (res) => res.json(),
-      ),
-      fetch(`https://dyaroman.github.io/wla-e2e/${path}results.json`).then(
-        (res) => res.json(),
-      ),
+      fetch(`${E2E_BASE_URL}/${path}build-info.json`).then((res) => res.json()),
+      fetch(`${E2E_BASE_URL}/${path}results.json`).then((res) => res.json()),
     ]);
     buildInfo.value = buildInfoJson;
     testResults.value = testResultsJson;
@@ -132,7 +127,7 @@ onMounted(async () => {
           {{ hasFailedTests ? "-100" : "+1000" }} Aura
         </figcaption>
       </figure>
-      <TestResultsDashboard :test-results />
+      <TestResultsDashboard :test-results :has-failed-tests="hasFailedTests" />
     </template>
   </template>
 </template>

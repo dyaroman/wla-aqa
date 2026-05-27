@@ -1,6 +1,7 @@
 <script setup>
 import ImageWithLoader from "@/components/ImageWithLoader.vue";
 import { getBuildPath, reformatErrorMessage } from "@/misc/helpers.js";
+import { E2E_BASE_URL } from "@/misc/config.js";
 import { useAppStore } from "@/stores/appStore";
 import { useDetailsStore } from "@/stores/detailsStore.js";
 
@@ -25,7 +26,7 @@ const { category, testResult } = defineProps({
 const errorMessage =
   category === "fail" ? reformatErrorMessage(testResult["err"]?.message) : null;
 const path = getBuildPath(appStore.buildNumber, appStore.latestBuildNumber);
-const src = `https://dyaroman.github.io/wla-e2e/${path}images/${testResult["img"]}`;
+const src = `${E2E_BASE_URL}/${path}images/${testResult["img"]}`;
 </script>
 
 <template>

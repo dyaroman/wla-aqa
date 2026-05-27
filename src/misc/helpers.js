@@ -4,6 +4,12 @@ export function reformatErrorMessage(errorMsg) {
     if (filterStart === -1) return errorMsg;
 
     const jsonStart = errorMsg.indexOf('{', filterStart);
+    // The test runner serialises the filters object as an escaped JSON string
+    // (e.g. {\"key\":\"value\"}), followed by a trailing quote that we drop
+    // with `slice(..., -1)`.
+    // Wrapping in `"..."` and calling JSON.parse treats the blob as a JSON
+    // string literal, which unescapes it; the second JSON.parse then turns the
+    // resulting string into the actual object.
     const jsonString = errorMsg.slice(jsonStart, -1);
     const parsedFilters = JSON.parse(JSON.parse(`"${jsonString}"`));
     const formattedFilters = JSON.stringify(parsedFilters, null, 2);
