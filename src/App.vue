@@ -1,16 +1,14 @@
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from "vue";
 
-import Loader from '@/components/Loader.vue';
-import Header from '@/components/Header.vue';
-// import PipelineRunner from '@/components/PipelineRunner.vue';
-// import Drawer from '@/components/Drawer.vue';
-import BuildSelector from '@/components/BuildSelector.vue';
-import BuildPipelineInfo from '@/components/BuildPipelineInfo.vue';
-import TestResultsDashboard from '@/components/TestResultsDashboard.vue';
-import TestDetailsToggle from '@/components/TestDetailsToggle.vue';
-import { getBuildPath, updateBuildNumberInUrl } from '@/misc/helpers.js';
-import { useAppStore } from '@/stores/appStore';
+import Loader from "@/components/Loader.vue";
+import Header from "@/components/Header.vue";
+import BuildSelector from "@/components/BuildSelector.vue";
+import BuildPipelineInfo from "@/components/BuildPipelineInfo.vue";
+import TestResultsDashboard from "@/components/TestResultsDashboard.vue";
+import TestDetailsToggle from "@/components/TestDetailsToggle.vue";
+import { getBuildPath, updateBuildNumberInUrl } from "@/misc/helpers.js";
+import { useAppStore } from "@/stores/appStore";
 
 const appStore = useAppStore();
 const appInit = ref(false);
@@ -25,7 +23,7 @@ const hasFailedTests = computed(
   () => testResults.value.filter((test) => test.fail).length > 0,
 );
 const buildNumberFromUrl = new URLSearchParams(window.location.search).get(
-  'build',
+  "build",
 );
 
 async function loadBuildsInfo() {
@@ -37,18 +35,18 @@ async function loadBuildsInfo() {
       fetch(`https://dyaroman.github.io/wla-e2e/data/build-info.json`)
         .then((res) => res.json())
         .then((json) => ({
-          number: json['buildNumber'],
-          timestamp: json['buildTimestamp'],
+          number: json["buildNumber"],
+          timestamp: json["buildTimestamp"],
         })),
     ]);
     buildsInfo.value = [...previousBuildsInfo, latestBuildInfo]
       .map((build) => {
-        build['number'] = build['number'].toString();
+        build["number"] = build["number"].toString();
         return build;
       })
       .reverse();
   } catch (error) {
-    console.error('Failed to load builds info:', error.message);
+    console.error("Failed to load builds info:", error.message);
     failedLoadData.value = true;
   }
 }
@@ -68,7 +66,7 @@ async function loadBuildData() {
     testResults.value = testResultsJson;
     dataLoaded.value = true;
   } catch (error) {
-    console.error('Failed to load build data:', error.message);
+    console.error("Failed to load build data:", error.message);
     failedLoadData.value = true;
   }
 }
@@ -77,19 +75,19 @@ async function loadConclusionImage() {
   conclusionImage.value = null;
 
   await fetch(
-    `https://yesno.wtf/api?force=${hasFailedTests.value ? 'no' : 'yes'}`,
+    `https://yesno.wtf/api?force=${hasFailedTests.value ? "no" : "yes"}`,
   )
     .then((res) => res.json())
     .then((json) => (conclusionImage.value = json.image))
     .catch((error) =>
-      console.error('Failed to load conclusion image:', error.message),
+      console.error("Failed to load conclusion image:", error.message),
     );
 }
 
 function initializeBuildNumber() {
   appStore.buildNumber =
     (buildNumberFromUrl &&
-      buildsInfo.value.find((build) => build['number'] === buildNumberFromUrl)
+      buildsInfo.value.find((build) => build["number"] === buildNumberFromUrl)
         ?.number) ||
     appStore.latestBuildNumber;
 }
@@ -107,11 +105,11 @@ watch(
 onMounted(async () => {
   try {
     await loadBuildsInfo();
-    appStore.latestBuildNumber = buildsInfo.value[0]?.number || '';
+    appStore.latestBuildNumber = buildsInfo.value[0]?.number || "";
     initializeBuildNumber();
     appInit.value = true;
   } catch (error) {
-    console.error('Failed to initialize app:', error.message);
+    console.error("Failed to initialize app:", error.message);
   }
 });
 </script>
@@ -131,19 +129,10 @@ onMounted(async () => {
       <figure v-if="conclusionImage" class="conclusion-image">
         <img :src="conclusionImage" alt="Conclusion Image" />
         <figcaption :class="hasFailedTests ? 'fail' : 'pass'">
-          {{ hasFailedTests ? '-100' : '+1000' }} Aura
+          {{ hasFailedTests ? "-100" : "+1000" }} Aura
         </figcaption>
       </figure>
       <TestResultsDashboard :test-results />
     </template>
-
-    <!--    <Drawer-->
-    <!--      v-model="appStore.showPipelineDrawer"-->
-    <!--      title="Run pipeline"-->
-    <!--      position="right"-->
-    <!--      max-size="400px"-->
-    <!--    >-->
-    <!--      <PipelineRunner />-->
-    <!--    </Drawer>-->
   </template>
 </template>

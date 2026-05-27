@@ -1,29 +1,45 @@
-# aqa
+![Deploy Status](https://github.com/dyaroman/wla-aqa/actions/workflows/deploy.yml/badge.svg)
 
-This template should help get you started developing with Vue 3 in Vite.
+# WLA AQA
 
-## Recommended IDE Setup
+### 🔗 [View Dashboard](https://dyaroman.github.io/wla-aqa/)
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+**WLA AQA** is a test results dashboard that visualises end-to-end test runs from [wla-e2e](https://github.com/dyaroman/wla-e2e). Each run is automatically published to GitHub Pages — the dashboard fetches the latest results on load and lets you browse up to 10 historical builds.
 
-## Customize configuration
+## Related Projects
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+- **[wla-react](https://github.com/dyaroman/wla-react)** – React 19 frontend (the app under test)
+- **[wla-e2e](https://github.com/dyaroman/wla-e2e)** – E2E test suite that generates the results consumed here
+- **[wla-api-supabase](https://github.com/dyaroman/wla-api-supabase)** – Supabase Edge Function backend
 
-## Project Setup
+---
+
+## Features
+
+- **Build selector** — browse the latest run or any of the 10 most recent builds
+- **Pass / Fail / Skipped** counts with per-test detail
+- **Failure details** — error messages and screenshots for each failed test
+- **Build metadata** — run number, branch, environment, linked to the GitHub Actions run
+- **Conclusion image** — because every test suite deserves a verdict
+- **Dark / light theme** — persisted across sessions
+
+---
+
+## Tech Stack
+
+**Vue 3** (Composition API) · **Pinia** · **Vite 8** · **SCSS** · **GitHub Actions** · **GitHub Pages**
+
+---
+
+## Local Setup
 
 ```sh
 npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
 npm run dev
 ```
 
-### Compile and Minify for Production
+The dev server fetches live data from `https://dyaroman.github.io/wla-e2e/data/` — no local data setup required.
 
-```sh
-npm run build
-```
+## Deploy
+
+Deployment is fully automated via GitHub Actions. Every push to `main` builds and deploys to GitHub Pages.
