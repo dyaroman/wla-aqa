@@ -29,10 +29,10 @@ const buildNumberFromUrl = new URLSearchParams(window.location.search).get(
 async function loadBuildsInfo() {
   try {
     const [previousBuildsInfo, latestBuildInfo] = await Promise.all([
-      fetch(`https://dyaroman.github.io/wla-e2e/data/builds.json`).then((res) =>
+      fetch(`https://dyaroman.github.io/wla-e2e/builds.json`).then((res) =>
         res.json(),
       ),
-      fetch(`https://dyaroman.github.io/wla-e2e/data/build-info.json`)
+      fetch(`https://dyaroman.github.io/wla-e2e/build-info.json`)
         .then((res) => res.json())
         .then((json) => ({
           number: json["buildNumber"],
@@ -55,10 +55,10 @@ async function loadBuildData() {
   try {
     const path = getBuildPath(appStore.buildNumber, appStore.latestBuildNumber);
     const [buildInfoJson, testResultsJson] = await Promise.all([
-      fetch(
-        `https://dyaroman.github.io/wla-e2e/data/${path}build-info.json`,
-      ).then((res) => res.json()),
-      fetch(`https://dyaroman.github.io/wla-e2e/data/${path}results.json`).then(
+      fetch(`https://dyaroman.github.io/wla-e2e/${path}build-info.json`).then(
+        (res) => res.json(),
+      ),
+      fetch(`https://dyaroman.github.io/wla-e2e/${path}results.json`).then(
         (res) => res.json(),
       ),
     ]);

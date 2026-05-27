@@ -1,8 +1,8 @@
 <script setup>
-import ImageWithLoader from '@/components/ImageWithLoader.vue';
-import { getBuildPath, reformatErrorMessage } from '@/misc/helpers.js';
-import { useAppStore } from '@/stores/appStore';
-import { useDetailsStore } from '@/stores/detailsStore.js';
+import ImageWithLoader from "@/components/ImageWithLoader.vue";
+import { getBuildPath, reformatErrorMessage } from "@/misc/helpers.js";
+import { useAppStore } from "@/stores/appStore";
+import { useDetailsStore } from "@/stores/detailsStore.js";
 
 const appStore = useAppStore();
 const detailsStore = useDetailsStore();
@@ -23,9 +23,9 @@ const { category, testResult } = defineProps({
 });
 
 const errorMessage =
-  category === 'fail' ? reformatErrorMessage(testResult['err']?.message) : null;
+  category === "fail" ? reformatErrorMessage(testResult["err"]?.message) : null;
 const path = getBuildPath(appStore.buildNumber, appStore.latestBuildNumber);
-const src = `https://dyaroman.github.io/wla-e2e/data/${path}images/${testResult['img']}`;
+const src = `https://dyaroman.github.io/wla-e2e/${path}images/${testResult["img"]}`;
 </script>
 
 <template>
@@ -34,11 +34,11 @@ const src = `https://dyaroman.github.io/wla-e2e/data/${path}images/${testResult[
     :open="detailsStore.results[index] ?? false"
     @toggle="detailsStore.setResultOpened(index, $event.target.open)"
   >
-    <summary>{{ testResult['title'] }}</summary>
+    <summary>{{ testResult["title"] }}</summary>
     <div class="error-message" v-if="testResult['fail']">
       <pre v-if="errorMessage.includes('{')">{{ errorMessage }}</pre>
       <template v-else>
-        {{ errorMessage?.replaceAll('\\', '') }}
+        {{ errorMessage?.replaceAll("\\", "") }}
       </template>
       <details
         :open="detailsStore.screenshots[index] ?? false"
@@ -51,5 +51,5 @@ const src = `https://dyaroman.github.io/wla-e2e/data/${path}images/${testResult[
       </details>
     </div>
   </details>
-  <template v-else>{{ testResult['title'] }}</template>
+  <template v-else>{{ testResult["title"] }}</template>
 </template>
