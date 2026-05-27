@@ -9,6 +9,7 @@ import vueDevTools from 'vite-plugin-vue-devtools';
 export default defineConfig(({ mode }) => {
   loadEnv(mode, process.cwd(), '');
   return {
+    base: '/wla-aqa/',
     plugins: [vue(), vueDevTools()],
     resolve: {
       alias: {
